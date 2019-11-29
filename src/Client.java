@@ -51,10 +51,13 @@ public class Client {
             try {
                 Scanner inputTastiera = new Scanner(System.in);
                 message = inputTastiera.nextLine();
-                System.out.println(message);
                 out.println(message);
             } catch (Exception e) {
                 e.printStackTrace();
+            }
+            if(!socket.isConnected()){
+                System.out.println("Connection to server lost.");
+                break;
             }
         }
     }
@@ -65,8 +68,8 @@ public class Client {
 
         client.play();
 
-        //when game is finished:
-        client.socket.close();
+/*        //when game is finished:
+        client.socket.close();*/
 
         //frame.dispose(); // <--- to close the UI
     }
