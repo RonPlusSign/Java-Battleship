@@ -4,17 +4,17 @@ Create boat:
 ```
 SET xxyylo
 ```
-* `xx` is a char representing the x coordinate of the boat (2 char lenght)
-* `yy` is the y coordinate (2 char lenght)
-* `l` is the lenght of the boat (1 char lenght)
+* `xx` is a char representing the x coordinate of the boat (2 char length)
+* `yy` is the y coordinate (2 char length)
+* `l` is the lenght of the boat (1 char length)
 * `o` is the orientation of the boat (1 char, H Horizontal, V Vertical)
 
 Fire boat:
 ```
 FIRE xxyy
 ```
-* `xx` x coordinate (2 char lenght)
-* `yy` y coordinate (2 char lenght)
+* `xx` x coordinate (2 char length)
+* `yy` y coordinate (2 char length)
 
 ---
 ## Response Protcol
