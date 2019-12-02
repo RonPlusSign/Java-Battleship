@@ -31,7 +31,7 @@ class Game implements Runnable {
         return;
     }
 
-    public void elaborateUserMove(String event, Player player) {
+    public int elaborateUserMove(String event, Player player) {
         //useless controls?
         /*if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
@@ -57,7 +57,7 @@ class Game implements Runnable {
                     if (currentPlayer.input.hasNextLine()) {
                         String command = currentPlayer.input.nextLine();
                         System.out.print("Command received ---> ");
-                        System.out.println(currentPlayer.mark + ": " + command);
+                        System.out.println(currentPlayer.name + ": " + command);
 
                         //TODO: elaborate client input
                         //If the move is not invalid then continue, otherwise repeat the command request

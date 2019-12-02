@@ -59,7 +59,8 @@ public class Client {
                             socket.close();
                         }
                         else if(message.contains("LOST")){
-
+                            System.out.println("YOU LOST :(");
+                            socket.close();
                         }
                         else if (message.contains("Your move")) {
                             try {
