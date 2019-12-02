@@ -9,6 +9,7 @@ import java.util.Scanner;
  * Scanner and PrintWriter.
  */
 class Player {
+
     char mark;
     Player opponent;
     Socket socket;
