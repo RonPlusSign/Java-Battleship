@@ -14,33 +14,31 @@ class Game implements Runnable {
     @Override
     public void run() {
         try {
-//            currentPlayer.opponent = opponent;
-//            opponent.opponent = currentPlayer;
-
-            if (!clientsConnected()){
+            if (!clientsConnected()) {
                 System.out.println("[ERROR] Connection error");
-            }
-            else manageGame();   //main function
+            } else manageGame();   //main function
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {   //when game finishes
             currentPlayer.socket.close();
+        } catch (IOException e) {}
+        try{
             opponent.socket.close();
-        } catch (IOException e) {
-        }
+        } catch (IOException e){}
+        return;
     }
 
-    public synchronized void elaborateUserMove(String event, Player player) {
+    public void elaborateUserMove(String event, Player player) {
         //useless controls?
         /*if (player != currentPlayer) {
             throw new IllegalStateException("Not your turn");
         } else if (player.opponent == null) {
             throw new IllegalStateException("You don't have an opponent yet");
         } else {*/
-            //TODO: add here game logic
-            // interpret event, check table, update table, send result to users...
-            System.out.println("EVENT: " + event);
+        //TODO: add here game logic
+        // interpret event, check table, update table, send result to users...
+        System.out.println("EVENT: " + event);
 //        }
     }
 
@@ -51,7 +49,7 @@ class Game implements Runnable {
                 if (currentPlayer.input.hasNextLine()) {
                     String command = currentPlayer.input.nextLine();
                     System.out.print("Command received ---> ");
-                    System.out.println(currentPlayer.mark + ": " + command);
+                    System.out.println(currentPlayer.name + ": " + command);
 
                     //TODO: elaborate client input
                     elaborateUserMove(command, currentPlayer);
@@ -66,9 +64,8 @@ class Game implements Runnable {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
-            }
-            finally {
-                if (!clientsConnected()){
+            } finally {
+                if (!clientsConnected()) {
                     System.out.println("[ERROR] Connection error");
                 }
             }
@@ -76,9 +73,9 @@ class Game implements Runnable {
     }
 
     private boolean clientsConnected() {
-        if (!currentPlayer.socket.isConnected()) {
-            opponent.output.println("Opponent left.");
-            System.out.println("Client " + currentPlayer.mark + " left the game.");
+        if (!Server.testConnection(currentPlayer)) {
+            opponent.output.println("WIN Opponent left the game.");
+            System.out.println("Client " + currentPlayer.name + " left the game.");
             try {
                 opponent.socket.close();
             } catch (IOException e) {
@@ -86,9 +83,9 @@ class Game implements Runnable {
             }
             System.out.println("[ERROR] Player 1 disconnected.");
             return false;
-        } else if (!opponent.socket.isConnected()) {
-            currentPlayer.output.println("Opponent left.");
-            System.out.println("Client " + opponent.mark + " left the game.");
+        } else if (!Server.testConnection(opponent)) {
+            currentPlayer.output.println("WIN Opponent left the game.");
+            System.out.println("Client " + opponent.name + " left the game.");
             try {
                 currentPlayer.socket.close();
             } catch (IOException e) {
@@ -97,6 +94,7 @@ class Game implements Runnable {
             System.out.println("[ERROR] Player 2 disconnected.");
             return false;
         }
+
         System.out.println("[MESSAGE] Players connections are OK.");
         return true;
     }

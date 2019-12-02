@@ -6,6 +6,7 @@ public class Client {
     private Socket socket;
     private Scanner in;
     private PrintWriter out;
+    private String username;    //stored for gui purposes (it might be showed to the user)
 
     public Client(String serverAddress) throws Exception {
         socket = new Socket(serverAddress, 58901);
@@ -29,35 +30,52 @@ public class Client {
 
     /**
      * The main thread of the client will listen for messages from the server.
-     * The first message will be a "WELCOME" message in which we receive our
-     * mark. Then we go into a loop listening for any of the other messages,
-     * and handling each message appropriately. The "VICTORY", "DEFEAT", "TIE",
-     *  and "OTHER_PLAYER_LEFT" messages will ask the user whether or not to
-     * play another game. If the answer is no, the loop is exited and the server
-     * is sent a "QUIT" message.
+     * The first message will be a "WELCOME" message.
+     * Then we go into a loop listening for any of the other messages,
+     * and handling each message appropriately.
      */
-    public void play() throws Exception {
+    public void play() throws Exception {   //manage here the commands
         System.out.println("PLAY");
 
-        while(true){
+        while (true) {
             String message = "";
-            while(!message.contains("Your move")){  //messages
-                if(in.hasNextLine()){
-                    message = in.nextLine();
-                    System.out.println(message);
-                }
-            }
-
             try {
-                Scanner inputTastiera = new Scanner(System.in);
-                message = inputTastiera.nextLine();
-                out.println(message);
+                while (true) {  //manage messages
+                    if (in.hasNextLine()) {
+                        message = in.nextLine();
+                        System.out.println(message);
+
+                        if(message.contains("WELCOME")){    //welcome message is composed by "WELCOME " + userID, generated Server-side
+                            username = message.substring(8);    //8 is the first char after "WELCOME "
+                            //TODO: make the user position its ship grid
+                        }
+                        else if (message.contains("PING")) {
+                            out.println("PONG");
+                        }
+                        else if(message.contains("WIN")){
+                            System.out.println("YOU WIN!");
+                            //instead of closing connection, we could ask the user if he wants to play again
+                            //if yes, we could add the client to the server queue (using the Game class)
+                            socket.close();
+                        }
+                        else if(message.contains("LOST")){
+
+                        }
+                        else if (message.contains("Your move")) {
+                            try {
+                                Scanner inputTastiera = new Scanner(System.in);
+                                message = inputTastiera.nextLine();
+                                out.println(message);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
             } catch (Exception e) {
-                e.printStackTrace();
-            }
-            if(!socket.isConnected()){
                 System.out.println("Connection to server lost.");
-                break;
+                socket.close();
+                e.printStackTrace();
             }
         }
     }
@@ -67,9 +85,6 @@ public class Client {
         System.out.println("Client created");
 
         client.play();
-
-/*        //when game is finished:
-        client.socket.close();*/
 
         //frame.dispose(); // <--- to close the UI
     }

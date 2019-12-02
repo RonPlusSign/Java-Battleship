@@ -9,23 +9,23 @@ import java.util.Scanner;
  * Scanner and PrintWriter.
  */
 class Player {
-    char mark;
+    String name;
     Player opponent;
     Socket socket;
     Scanner input;
     PrintWriter output;
 
-    public Player(Socket socket, char mark) {
+    public Player(Socket socket, String mark) {
         this.socket = socket;
-        this.mark = mark;
+        this.name = mark;
 
-        System.out.println("New Client connected: " + this.mark);
+        System.out.println("New Client connected: " + this.name);
 
         try {
             input = new Scanner(socket.getInputStream());
             output = new PrintWriter(socket.getOutputStream(), true);
             output.println("WELCOME " + mark);
-            if (mark == 'X') {
+            if (opponent == null) {
                 output.println("Waiting for opponent");
             }
 
