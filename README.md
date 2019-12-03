@@ -28,7 +28,7 @@ The response is a simple string with a status update:
 * `LOST` you lost the game
 * `WON` you won the game
 * `ERROR <code> <msg>` unsuccessful command
-* `OK` successful command
+* `OK <msg>` successful command
 
 ### Error status codes
 * `1` Invalid boat position
