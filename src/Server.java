@@ -7,6 +7,7 @@ import java.util.concurrent.Executors;
 public class Server {
     private static ArrayList<Player> clientsQueue = new ArrayList();
     private static int clientCount = 0;
+    private static final int maxGrid = 21;
 
     public static void main(String[] args) throws Exception {
         try (ServerSocket listener = new ServerSocket(58901)) {
@@ -15,15 +16,15 @@ public class Server {
             while (true) {
                 Socket newSocket = listener.accept();
                 if(newSocket.isConnected())
-                    clientsQueue.add(new Player(newSocket, nextPlayerID()));
+                    clientsQueue.add(new Player(newSocket, nextPlayerID(), maxGrid));
 
-                if (clientsQueue.size() >= 2) { //if there are at least 2 players in queue, start a game (checking their connection before starting)
+                if (clientsQueue.size() >= 2) {                                 //if there are at least 2 players in queue, start a game (checking their connection before starting)
                     try {
-                        if (!testConnection(clientsQueue.get(0))) {  //check if the first player in queue still connected
-                            clientsQueue.remove(0); //if the player isn't connected, remove it from the queue
-                        } else if (!testConnection(clientsQueue.get(1))) {   //check if the first player in queue still connected
-                            clientsQueue.remove(1); //if the player isn't connected, remove it from the queue
-                        } else {    //both players are still connected
+                        if (!testConnection(clientsQueue.get(0))) {            //check if the first player in queue still connected
+                            clientsQueue.remove(0);                     //if the player isn't connected, remove it from the queue
+                        } else if (!testConnection(clientsQueue.get(1))) {     //check if the first player in queue still connected
+                            clientsQueue.remove(1);                     //if the player isn't connected, remove it from the queue
+                        } else {                                               //both players are still connected
                             System.out.println("Starting the game");
                             Game game = new Game(clientsQueue.remove(0), clientsQueue.remove(0));   //ArrayList.remove(index) method returns the Player object in that position
                             pool.execute(game);
@@ -50,9 +51,9 @@ public class Server {
         boolean isAlive = false;
 
         try {
-            player.output.println("PING Test connessione di " + player.name);
-            if(player.input.hasNextLine()){
-                if(player.input.nextLine().contains("PONG"))
+            player.getOutput().println("PING Test connessione di " + player.getName());
+            if(player.getInput().hasNextLine()){
+                if(player.getInput().nextLine().contains("PONG"))
                     isAlive = true;
             }
 

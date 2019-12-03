@@ -7,9 +7,11 @@ public class Tile {
 
     private Ship ship;
     private boolean isHit;
+    private boolean available;
 
     public Tile() {
         isHit = false;
+        available = true;
     }
 
     public void insertShip(Ship ship){
@@ -42,5 +44,13 @@ public class Tile {
      */
     public Ship getShip() {
         return ship;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public boolean isAvailable() {
+        return available;
     }
 }
