@@ -27,7 +27,12 @@ The response is a simple string with a status update:
 * `READY` your move
 * `LOST` you lost the game
 * `WON` you won the game
-* `ERROR <msg>` you won the game
+* `ERROR <code> <msg>` unsuccessful command
+* `OK <msg>` successful command
+
+### Error status codes
+* `1` Invalid boat position
+* `2` Selected boat size not available
 
 ---
 ## Game matrix
