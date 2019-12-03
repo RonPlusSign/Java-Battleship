@@ -24,10 +24,12 @@ class Game implements Runnable {
 
         try {   //when game finishes
             currentPlayer.socket.close();
-        } catch (IOException e) {}
-        try{
+        } catch (IOException e) {
+        }
+        try {
             opponent.socket.close();
-        } catch (IOException e){}
+        } catch (IOException e) {
+        }
         return;
     }
 
@@ -46,28 +48,28 @@ class Game implements Runnable {
     }
 
     private void manageGame() {
-        while (true) {
+        while (clientsConnected()) {
             try {
-
                 //Loops until the move isn't invalid
-                while (true){
+                while (true) {
 
                     currentPlayer.output.println("MESSAGE Your move");
 
-                    if (currentPlayer.input.hasNextLine()) {
-                        String command = currentPlayer.input.nextLine();
-                        System.out.print("Command received ---> ");
-                        System.out.println(currentPlayer.name + ": " + command);
+                    while (!currentPlayer.input.hasNextLine() && clientsConnected()) {}
 
-                        //TODO: elaborate client input
-                        //If the move is not invalid then continue, otherwise repeat the command request
-                        if (!(elaborateUserMove(command, currentPlayer) == -1)) {
-                            currentPlayer.output.println("You made your move: " + command);
-                            opponent.output.println("Your opponent made his move: " + command);
-                            break;
-                        }
+                    String command = currentPlayer.input.nextLine();
+                    System.out.print("Command received ---> ");
+                    System.out.println(currentPlayer.name + ": " + command);
+
+                    //TODO: elaborate client input
+                    //If the move is not invalid then continue, otherwise repeat the command request
+                    if (!(elaborateUserMove(command, currentPlayer) == -1)) {
+                        currentPlayer.output.println("You made your move: " + command);
+                        opponent.output.println("Your opponent made his move: " + command);
+                        break;
                     }
                 }
+
                 //swap players and activate opponent turns
                 Player temp = currentPlayer;
                 currentPlayer = opponent;
@@ -77,6 +79,7 @@ class Game implements Runnable {
             } finally {
                 if (!clientsConnected()) {
                     System.out.println("[ERROR] Connection error");
+                    break;
                 }
             }
         }
