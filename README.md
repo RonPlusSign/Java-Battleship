@@ -27,6 +27,7 @@ The response is a simple string with a status update:
 * `READY` your move
 * `LOST` you lost the game
 * `WON` you won the game
+* `ERROR <msg>` you won the game
 
 ---
 ## Game matrix
