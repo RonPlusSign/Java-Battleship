@@ -5,22 +5,42 @@
  */
 public class Tile {
 
-    Ship ship;
-    boolean isHit;
+    private Ship ship;
+    private boolean isHit;
 
     public Tile() {
-        isHit=false;
+        isHit = false;
     }
 
     public void insertShip(Ship ship){
         this.ship=ship;
     }
 
-    public void setIsHit() {
-        isHit = true;
+    /**
+     * Hit the current tile
+     * @return  if the shot is successfull (water -> false, hit -> true)
+     */
+    public boolean hit() {
+        if (ship != null) {
+            isHit = true;
+            ship.removeLifePoint();
+            return true;
+        }
+        else return false;
     }
 
-    public boolean getIsHit(){
+    /**
+     * Check if the current tile is hit
+     * @return value
+     */
+    public boolean isHit(){
         return isHit;
+    }
+
+    /**
+     * @return the ship
+     */
+    public Ship getShip() {
+        return ship;
     }
 }
