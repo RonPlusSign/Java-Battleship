@@ -19,12 +19,13 @@ class Player {
     /**
      * Contains the number of ships available for each length
      * i.e.
-     * shipList[0] contains the number of ships of size 1
-     * shipList[1] contains the number of ships of size 2
-     * ecc.
+     * shipList[0] contains the number of ships of size 2
+     * shipList[1] contains the number of ships of size 3
+     * shipList[2] contains the number of ships of size 4
+     * shipList[3] contains the number of ships of size 5
      */
     private static final int startingShipList[] = new int[] {
-        5, 4, 6, 8
+        3, 2, 1, 1
     };
     // Current player ship list (contains the remanining number of ships)
     private int shipList[];
@@ -58,57 +59,68 @@ class Player {
             e.printStackTrace();
         }
     }
-    
+
+    /**
+     * Function which fires the own tile
+     * @param x X Axys
+     * @param y Y Axys
+     */
     public void fire(int x, int y) {
         if (gameGrid[x][y].hit()) {
-            output.println("HIT");
+            output.print("The Ship present in [" + x + ";" + y + "] has been HIT");
             
             if (gameGrid[x][y].getShip().isSunk()) {
-                output.println("SUNK");
-            }
+                output.println("and SUNK!");
+            } else output.println("!");
         }
         else {
-            output.println("MISS");
+            output.println("MISS! Your opponent chose [" + x + ";" + y + "] tile");
         }
     }
 
-    public void set(int x, int y, int length, char orientation) {
+    /**
+     * Function which sets the ship in the gameGrid
+     * @param x Axys
+     * @param y Axys
+     * @param length Ship Length
+     * @param orientation Ship Orientation
+     */
+    public void set(int x, int y, int length, char orientation) throws Exception {
         // Check if selected ship is available
-        if (shipList[length - 1] > 0) {
+        if (shipList[length - 2] > 0) {
 
             if (getAvailability(x, y, length, orientation)){
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
-                shipList[length - 1]--;
+                shipList[length - 2]--;
                 setUnavailability(x,y,length,orientation);
                 output.println("OK Added new ship of length" + length);
             } else {
-                output.println("ERROR 1 Invalid boat position");
-                return;
+                throw new Exception("ERROR 1 Invalid boat position");
             }
         }
         else {
-            output.println("ERROR 2 Selected boat size not available");
+            throw new Exception("ERROR 2 Selected boat size not available");
         }
     }
 
     /**
      * Function which checks the availability of the Tiles selected to insert the Ship into them
-     * @param x
-     * @param y
-     * @param length
-     * @param orientation
+     * @param x Axys
+     * @param y Axys
+     * @param length Ship Length
+     * @param orientation Ship Orientation
      * @return
      */
     private boolean getAvailability(int x, int y, int length, char orientation){
 
         //Check if the ship "overflows" from the grid
         //If the ship is Horizontally placed and its length goes outside the grid (21 columns)
-        if (String.valueOf(orientation) == "H" && (x+length-1) >= gameGrid[0].length) return false;
+        if (orientation == 'H' && (x+length-1) >= gameGrid[0].length) return false;
         //If the ship is Vertically placed and its length goes outside the grid (21 rows)
-        if (String.valueOf(orientation) == "V" && (y+length-1) >= gameGrid.length) return false;
+        if (orientation == 'V' && (y+length-1) >= gameGrid.length) return false;
 
         for (int i=0; i < length; i++){
-            if (String.valueOf(orientation) == "H"){
+            if (orientation == 'H'){
                 if (gameGrid[i+x][y].isAvailable() == false) return false;
             } else {
                 if (gameGrid[x][i+y].isAvailable() == false) return false;
@@ -119,10 +131,10 @@ class Player {
 
     /**
      * Function which sets the unavailability of the tiles near to the ships, without excluding the tiles where the Ship is placed as well
-     * @param x
-     * @param y
-     * @param length
-     * @param orientation
+     * @param x X Axys
+     * @param y Y Axys
+     * @param length Ship Length
+     * @param orientation Ship Orientation
      */
     private void setUnavailability(int x, int y, int length, char orientation){
 
