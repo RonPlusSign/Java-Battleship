@@ -41,6 +41,17 @@ class Game implements Runnable {
      */
 
     private void elaborateUserMove(String event) throws Exception{
+
+        if(event.startsWith("DELETE")){
+            //If the message has the correct Format
+            checkCorrectMessageFormat("DELETE", event);
+
+            int x= Integer.parseInt(String.valueOf(event.charAt(7)+event.charAt(8)));
+            int y= Integer.parseInt(String.valueOf(event.charAt(9)+event.charAt(10)));
+
+            checkCorrectMessage(x, y);
+            currentPlayer.delete(x,y);
+        }
         //FIRE action
         if (event.startsWith("FIRE")){
             //If the message has the correct Format
@@ -65,7 +76,7 @@ class Game implements Runnable {
             checkCorrectMessage(x, y, length, orientation);
             currentPlayer.set(x, y, length, orientation);
         }
-        //Neither "FIRE" nor "SET"
+        //Neither "DELETE nor ""FIRE" nor "SET"
         else {
             throw new Exception();
         }
@@ -104,8 +115,13 @@ class Game implements Runnable {
      * @throws Exception Invalid Message Format
      */
     private void checkCorrectMessageFormat(String nameMessage, String message) throws Exception{
+        //DELETE message
+        if(nameMessage.equals("DELETE")){
+            if (!(String.valueOf(message.charAt(6)).equals(" ") && message.length() == 11))
+                throw new Exception("Invalid Message Format");
+        }
         //FIRE message
-        if (nameMessage.equals("FIRE")){
+        else if (nameMessage.equals("FIRE")){
             if (!(String.valueOf(message.charAt(4)).equals(" ") && message.length() == 9))
                 throw new Exception("Invalid Message Format");
         }

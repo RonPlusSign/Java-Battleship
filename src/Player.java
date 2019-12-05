@@ -103,6 +103,12 @@ class Player {
         }
     }
 
+
+    public void delete(int x, int y) throws Exception {
+
+    }
+
+
     /**
      * Function which checks the availability of the Tiles selected to insert the Ship into them
      * @param x Axys
