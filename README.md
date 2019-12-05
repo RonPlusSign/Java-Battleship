@@ -16,6 +16,13 @@ FIRE xxyy
 * `xx` x coordinate (2 char length)
 * `yy` y coordinate (2 char length)
 
+Delete boat:
+```
+DELETE xxyy
+```
+* `xx` x coordinate (2 char length)
+* `yy` y coordinate (2 char length)
+
 ---
 ## Response Protcol
 The response is a simple string with a status update:
