@@ -92,7 +92,7 @@ class Player {
             if (getAvailability(x, y, length, orientation)){
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
                 shipList[length - 2]--;
-                setUnavailability(x,y,length,orientation);
+                setAvailability(x,y,length,orientation, false);
                 output.println("OK Added new ship of length" + length);
             } else {
                 throw new Exception("ERROR 1 Invalid boat position");
@@ -105,7 +105,19 @@ class Player {
 
 
     public void delete(int x, int y) throws Exception {
+        if (gameGrid[x][y] == null) throw new Exception("ERROR 3 Selected tile doesn't contain a boat");
+        else {
+            int xInit = gameGrid[x][y].getShip().getX();
+            int yInit = gameGrid[x][y].getShip().getY();
+            int length = gameGrid[x][y].getShip().getLength();
+            char orientation = gameGrid[x][y].getShip().getOrientation();
 
+            for (int i = 0; i < length; i++) {
+                //delete
+            }
+
+            setAvailability(xInit, yInit, length, orientation, true);
+        }
     }
 
 
@@ -136,13 +148,14 @@ class Player {
     }
 
     /**
-     * Function which sets the unavailability of the tiles near to the ships, without excluding the tiles where the Ship is placed as well
+     * Function which sets the availability (or unavailability) of the tiles near to the ships, without excluding the tiles where the Ship is placed as well
      * @param x X Axys
      * @param y Y Axys
      * @param length Ship Length
      * @param orientation Ship Orientation
+     * @param available true --> AVAILABLE false --> UNAVAILABLE
      */
-    private void setUnavailability(int x, int y, int length, char orientation){
+    private void setAvailability(int x, int y, int length, char orientation, boolean available){
 
         //Loops that marks the tiles near the ship as non available (available = false;)
         for (int i=0; i < length; i++){
@@ -150,38 +163,37 @@ class Player {
             if (String.valueOf(orientation) == "H"){
                 //If the Ship isn't placed at the first or at the last column
                 if(((x+i) != 0) && ((x+i)!=20)) {
-                    gameGrid[x+i-1][y].setAvailable(false);
-                    gameGrid[x+i+1][y].setAvailable(false);
+                    gameGrid[x+i-1][y].setAvailable(available);
+                    gameGrid[x+i+1][y].setAvailable(available);
                 }
                 //If the Ship is placed at the first column
-                if(y == 0) gameGrid[x+i][y+1].setAvailable(false);
+                if(y == 0) gameGrid[x+i][y+1].setAvailable(available);
                 //If the Ship is placed at the last column
-                else if(y == 20) gameGrid[x+i][y-1].setAvailable(false);
+                else if(y == 20) gameGrid[x+i][y-1].setAvailable(available);
                 else {
-                    gameGrid[x+i][y+1].setAvailable(false);
-                    gameGrid[x+i][y-1].setAvailable(false);
+                    gameGrid[x+i][y+1].setAvailable(available);
+                    gameGrid[x+i][y-1].setAvailable(available);
                 }
             }
             //If the orientation is Vertical
             else {
                 //If the Ship isn't placed at the first or at the last row
                 if(((y+i) != 0) && ((y+i)!=20)) {
-                    gameGrid[x][y+i-1].setAvailable(false);
-                    gameGrid[x][y+i+1].setAvailable(false);
+                    gameGrid[x][y+i-1].setAvailable(available);
+                    gameGrid[x][y+i+1].setAvailable(available);
                 }
                 //If the Ship is placed at the first row
-                if(x == 0) gameGrid[x+1][y+i].setAvailable(false);
+                if(x == 0) gameGrid[x+1][y+i].setAvailable(available);
                 //If the Ship is placed at the last row
-                else if(x == 20) gameGrid[x-1][y+i].setAvailable(false);
+                else if(x == 20) gameGrid[x-1][y+i].setAvailable(available);
                 else {
-                    gameGrid[x+1][y+i].setAvailable(false);
-                    gameGrid[x-1][y+i].setAvailable(false);
+                    gameGrid[x+1][y+i].setAvailable(available);
+                    gameGrid[x-1][y+i].setAvailable(available);
                 }
             }
         }
 
     }
-
 
     public PrintWriter getOutput() {
         return output;

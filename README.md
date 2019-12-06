@@ -40,12 +40,13 @@ The response is a simple string with a status update:
 ### Error status codes
 * `1` Invalid boat position
 * `2` Selected boat size not available
+* `3` Selected tile doesn't contain a boat
 
 ---
 ## Game matrix
 The server saves the status of each player and its matrix. Each tile of the matrix is an object composed like:
 ```java
-Boat boat = new Boat();
-Boolean alreadyHit = false;
+Ship ship = new Ship();
+Boolean isHit = false;
 ```
 
