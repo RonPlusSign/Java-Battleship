@@ -38,9 +38,9 @@ The response is a simple string with a status update:
 * `OK <msg>` successful command
 
 ### Error status codes
-* `1` Invalid boat position
-* `2` Selected boat size not available
-* `3` Selected tile doesn't contain a boat
+* `1` Invalid boat position [SET]
+* `2` Selected boat size not available [SET]
+* `3` Selected tile doesn't contain a boat [DELETE]
 
 ---
 ## Game matrix
