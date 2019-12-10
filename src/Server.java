@@ -5,7 +5,7 @@ import java.util.concurrent.Executors;
 //import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
-    private static ArrayList<Player> clientsQueue = new ArrayList();
+    private static ArrayList<Player> clientsQueue = new ArrayList<Player>();
     private static int clientCount = 0;
     private static final int maxGrid = 21;
 
