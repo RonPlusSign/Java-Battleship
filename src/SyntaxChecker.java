@@ -35,22 +35,22 @@ class SyntaxChecker {
      * Function which checks the correct message length
      * @param nameMessage FIRE or SET
      * @param message message
-     * @throws IllegalFormatException Invalid Message Format
+     * @throws IllegalArgumentException Invalid Message Format
      */
-    public void checkCorrectMessageFormat(String nameMessage, String message) throws IllegalFormatException {
+    public void checkCorrectMessageFormat(String nameMessage, String message) throws IllegalArgumentException {
         //DELETE message
         if(nameMessage.equals("DELETE")){
             if (!(String.valueOf(message.charAt(6)).equals(" ") && message.length() == 11))
-                throw new IllegalFormatException("ERROR Invalid Message Format");
+                throw new IllegalArgumentException("ERROR Invalid Message Format");
         }
         //FIRE message
         else if (nameMessage.equals("FIRE")){
             if (!(String.valueOf(message.charAt(4)).equals(" ") && message.length() == 9))
-                throw new IllegalFormatException("ERROR Invalid Message Format");
+                throw new IllegalArgumentException("ERROR Invalid Message Format");
         }
         //SET message
         else if (String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10)
-            throw new IllegalFormatException("ERROR Invalid Message Format");
+            throw new IllegalArgumentException("ERROR Invalid Message Format");
     }
 
 

@@ -81,7 +81,7 @@ class Game implements Runnable {
         }
         //Neither "DELETE nor ""FIRE" nor "SET"
         else {
-            throw new IllegalFormatException("ERROR Command not valid");
+            throw new IllegalArgumentException("ERROR Command not valid");
         }
 
         System.out.println("EVENT: " + event);
