@@ -14,7 +14,7 @@ class SyntaxChecker {
      * @throws IllegalArgumentException Invalid Coordinates
      */
     public void checkCorrectMessage(int x, int y) throws IllegalArgumentException {
-        if (x>0 && x<maxGrid && y>0 && y<maxGrid) throw new IllegalArgumentException("ERROR Invalid Coordinates");
+        if (!(x>0 && x<maxGrid && y>0 && y<maxGrid)) throw new IllegalArgumentException("ERROR Invalid Coordinates");
     }
 
     /**
@@ -49,7 +49,7 @@ class SyntaxChecker {
                 throw new IllegalArgumentException("ERROR Invalid Message Format");
         }
         //SET message
-        else if (String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10)
+        else if (!(String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10))
             throw new IllegalArgumentException("ERROR Invalid Message Format");
     }
 

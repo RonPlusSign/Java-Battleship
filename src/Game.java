@@ -49,8 +49,8 @@ class Game implements Runnable {
             //If the message has the correct Format
             syntaxChecker.checkCorrectMessageFormat("DELETE", event);
 
-            int x= Integer.parseInt(String.valueOf(event.charAt(7)+event.charAt(8)));
-            int y= Integer.parseInt(String.valueOf(event.charAt(9)+event.charAt(10)));
+            int x= Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
+            int y= Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
 
             syntaxChecker.checkCorrectMessage(x, y);
             currentPlayer.delete(x,y);
@@ -60,8 +60,8 @@ class Game implements Runnable {
             //If the message has the correct Format
             syntaxChecker.checkCorrectMessageFormat("FIRE", event);
 
-            int x= Integer.parseInt(String.valueOf(event.charAt(5)+event.charAt(6)));
-            int y= Integer.parseInt(String.valueOf(event.charAt(7)+event.charAt(8)));
+            int x= Integer.parseInt(String.valueOf(event.charAt(5)).concat(String.valueOf(event.charAt(6))));
+            int y= Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
 
             syntaxChecker.checkCorrectMessage(x, y);
             opponent.fire(x, y);
@@ -71,8 +71,8 @@ class Game implements Runnable {
             //If the message has the correct Format
             syntaxChecker.checkCorrectMessageFormat("SET", event);
 
-            int x= Integer.parseInt(String.valueOf(event.charAt(4)+event.charAt(5)));
-            int y= Integer.parseInt(String.valueOf(event.charAt(6)+event.charAt(7)));
+            int x= Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
+            int y= Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
             int length= Integer.parseInt(String.valueOf(event.charAt(8)));
             char orientation = event.charAt(9);
 
@@ -107,8 +107,8 @@ class Game implements Runnable {
                         currentPlayer.getOutput().println("OK " + command);
                         break;
                     } catch (Exception e) {
-                        // currentPlayer.getOutput().println("ERROR Command <" + command + "> is not valid. Type another command");
-                        currentPlayer.getOutput().println("ERROR " + e.getMessage() + " Type another command");
+
+                        currentPlayer.getOutput().println(e.getMessage() + " (Type another command)");
 
                     }
                 }

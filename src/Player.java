@@ -89,6 +89,9 @@ class Player {
         // Check if selected ship is available
         if (shipList[length - 2] > 0) {
 
+            System.out.println(x);
+            System.out.println(y);
+
             if (getAvailability(x, y, length, orientation)){
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
                 shipList[length - 2]--;
@@ -130,7 +133,6 @@ class Player {
      * @return
      */
     private boolean getAvailability(int x, int y, int length, char orientation){
-
         //Check if the ship "overflows" from the grid
         //If the ship is Horizontally placed and its length goes outside the grid (21 columns)
         if (orientation == 'H' && (x+length-1) >= gameGrid[0].length) return false;
