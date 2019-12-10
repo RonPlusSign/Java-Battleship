@@ -62,7 +62,7 @@ public class Client {
                             System.out.println("YOU LOST :(");
                             socket.close();
                         }
-                        else if (message.contains("Your move")) {
+                        else if (message.contains("TURN")) {
                             try {
                                 Scanner inputTastiera = new Scanner(System.in);
                                 message = inputTastiera.nextLine();
