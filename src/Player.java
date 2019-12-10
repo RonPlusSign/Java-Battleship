@@ -1,3 +1,5 @@
+import com.sun.xml.internal.ws.util.StringUtils;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -67,14 +69,19 @@ class Player {
      */
     public void fire(int x, int y) {
         if (gameGrid[x][y].hit()) {
-            output.print("The Ship present in [" + x + ";" + y + "] has been HIT");
+
+            output.print("HIT " + String.format("%02d", x) + String.format("%02d", y));
             
             if (gameGrid[x][y].getShip().isSunk()) {
-                output.println("and SUNK!");
-            } else output.println("!");
+
+                output.println("SUNK " + String.format("%02d", gameGrid[x][y].getShip().getX()) +
+                                        String.format("%02d", gameGrid[x][y].getShip().getY()) +
+                                        gameGrid[x][y].getShip().getLength() +
+                                        gameGrid[x][y].getShip().getOrientation());
+            } else output.println();
         }
         else {
-            output.println("MISS! Your opponent chose [" + x + ";" + y + "] tile");
+            output.println("MISS " + String.format("%02d", x) + String.format("%02d", y));
         }
     }
 
@@ -88,9 +95,6 @@ class Player {
     public void set(int x, int y, int length, char orientation) throws Exception {
         // Check if selected ship is available
         if (shipList[length - 2] > 0) {
-
-            System.out.println(x);
-            System.out.println(y);
 
             if (getAvailability(x, y, length, orientation)){
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
