@@ -36,6 +36,8 @@ The response is a simple string with a status update:
 * `WON` you won the game
 * `ERROR <code> <msg>` unsuccessful command
 * `OK <msg>` successful command
+* `TURN` Tells to the client that is it's turn
+* `MESSAGE <msg>` A simple message
 
 ### Error status codes
 * `1` Invalid boat position [SET]
