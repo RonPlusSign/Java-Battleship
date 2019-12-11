@@ -23,15 +23,26 @@ DELETE xxyy
 * `xx` x coordinate (2 char length)
 * `yy` y coordinate (2 char length)
 
+Ask client to create its grid:
+```
+GRID abcd
+```
+abcd are the number of ships to position, ordered by length
+* a: number of boats of length 2
+* b: number of boats of length 3
+* c: number of boats of length 4
+* d: number of boats of length 5
+
 ---
 ## Response Protcol
 The response is a simple string with a status update:
 
+* `PLAY` game has been created
 * `HIT` selected coordinates had a boat
 * `MISS` selected coordinates were empty
 * `SUNK` remote boat was fully hit, and then sunk
 * `WAIT` wait for opponent
-* `READY` your move
+* `READY` the player is ready to start playing (ship grid is completely set)
 * `LOST` you lost the game
 * `WON` you won the game
 * `ERROR <code> <msg>` unsuccessful command
@@ -43,11 +54,13 @@ The response is a simple string with a status update:
 * `1` Invalid boat position [SET]
 * `2` Selected boat size not available [SET]
 * `3` Selected tile doesn't contain a boat [DELETE]
+* `4` Unknown message
+* `5` Connection error
 
 ---
 ## Game matrix
 The server saves the status of each player and its matrix. Each tile of the matrix is an object composed like:
-```java
+```
 Ship ship = new Ship();
 Boolean isHit = false;
 ```

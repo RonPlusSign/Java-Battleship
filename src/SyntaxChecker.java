@@ -41,16 +41,16 @@ class SyntaxChecker {
         //DELETE message
         if(nameMessage.equals("DELETE")){
             if (!(String.valueOf(message.charAt(6)).equals(" ") && message.length() == 11))
-                throw new IllegalArgumentException("ERROR Invalid Message Format");
+                throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
         }
         //FIRE message
         else if (nameMessage.equals("FIRE")){
             if (!(String.valueOf(message.charAt(4)).equals(" ") && message.length() == 9))
-                throw new IllegalArgumentException("ERROR Invalid Message Format");
+                throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
         }
         //SET message
         else if (!(String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10))
-            throw new IllegalArgumentException("ERROR Invalid Message Format");
+            throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
     }
 
 

@@ -5,11 +5,11 @@ import java.util.concurrent.Executors;
 //import java.util.concurrent.ThreadPoolExecutor;
 
 public class Server {
-    private static ArrayList<Player> clientsQueue = new ArrayList<Player>();
+    private static ArrayList<Player> clientsQueue = new ArrayList<>();
     private static int clientCount = 0;
     private static final int maxGrid = 21;
 
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         try (ServerSocket listener = new ServerSocket(58901)) {
             System.out.println("Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(1);
@@ -60,7 +60,6 @@ public class Server {
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
-        System.out.println("Socket isAlive: " + isAlive);
         return isAlive;
     }
 
@@ -68,7 +67,7 @@ public class Server {
     * @return a String representing the next playerID ('C' + clientCount)
     * */
     private static String nextPlayerID() {
-        String nextCode = "C" + String.valueOf(clientCount);
+        String nextCode = "C" + clientCount;
         clientCount++;
         return nextCode;
     }
