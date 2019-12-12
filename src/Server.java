@@ -2,21 +2,24 @@ import java.net.*;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-//import java.util.concurrent.ThreadPoolExecutor;
 
+/**
+ * Main Server function that manages Clients queue and starts the Games
+ */
 public class Server {
     private static ArrayList<Player> clientsQueue = new ArrayList<>();
     private static int clientCount = 0;
-    private static final int maxGrid = 21;
+    private static final int GRID_LENGTH = 21,
+            MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 
     public static void main(String[] args) {
         try (ServerSocket listener = new ServerSocket(58901)) {
             System.out.println("Server is Running...");
-            ExecutorService pool = Executors.newFixedThreadPool(1);
+            ExecutorService pool = Executors.newFixedThreadPool(MAX_GAMES_NUMBER);
             while (true) {
                 Socket newSocket = listener.accept();
-                if(newSocket.isConnected())
-                    clientsQueue.add(new Player(newSocket, nextPlayerID(), maxGrid));
+                if (newSocket.isConnected())
+                    clientsQueue.add(new Player(newSocket, nextPlayerID(), GRID_LENGTH));
 
                 if (clientsQueue.size() >= 2) {                                 //if there are at least 2 players in queue, start a game (checking their connection before starting)
                     try {
@@ -42,7 +45,7 @@ public class Server {
     /**
      * @param player is the Player whose connection has to be tested
      * @return true if client is still connected, false otherwise
-     * */
+     */
     public static boolean testConnection(Player player) {
         //to test client connection, we just send a PING command to it.
         //if it answers correctly, client is still connected
@@ -52,8 +55,8 @@ public class Server {
 
         try {
             player.getOutput().println("PING Test connessione di " + player.getName());
-            if(player.getInput().hasNextLine()){
-                if(player.getInput().nextLine().contains("PONG"))
+            if (player.getInput().hasNextLine()) {
+                if (player.getInput().nextLine().contains("PONG"))
                     isAlive = true;
             }
 
@@ -64,8 +67,8 @@ public class Server {
     }
 
     /**
-    * @return a String representing the next playerID ('C' + clientCount)
-    * */
+     * @return a String representing the next playerID ('C' + clientCount)
+     */
     private static String nextPlayerID() {
         String nextCode = "C" + clientCount;
         clientCount++;

@@ -30,6 +30,12 @@ class Player {
     // Current player ship list (contains the remanining number of ships)
     private int[] shipList;
 
+    /**
+     * Constructor
+     * @param socket socket object connected to Server
+     * @param name Player name
+     * @param size grid length
+     */
     public Player(Socket socket, String name, int size) {
         this.socket = socket;
         this.name = name;
@@ -51,10 +57,6 @@ class Player {
             input = new Scanner(socket.getInputStream());
             output = new PrintWriter(socket.getOutputStream(), true);
             output.println("WELCOME " + name);
-            //if (opponent == null) {
-            //    output.println("Waiting for opponent");
-            //}
-
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -92,8 +94,6 @@ class Player {
      * @param orientation Ship Orientation
      */
     public void set(int x, int y, int length, char orientation) throws IllegalArgumentException {
-        System.out.println("Successfully set ship of " + name + ": X=" + x + " Y=" + y + " length=" + length + " orientation=" + orientation);
-
         // Check if selected ship is available
         if (shipList[length - 2] > 0) {
 
@@ -101,7 +101,6 @@ class Player {
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
                 shipList[length - 2]--;
                 setAvailability(x, y, length, orientation, false);
-                output.println("OK Added new ship of length" + length);
             } else {
                 throw new IllegalArgumentException("ERROR 1 Invalid boat position");
             }
@@ -201,6 +200,10 @@ class Player {
         }
     }
 
+    /**
+     * Function that checks if all the Player ships are positioned
+     * @return true if all the ships are set, false otherwise
+     */
     public boolean isGridReady() {
         for (int boatsToBeSet : shipList) {
             if (boatsToBeSet != 0) return false;  //if there are still boats to be set, return false
@@ -208,6 +211,8 @@ class Player {
         //if all boats have been set, return true
         return true;
     }
+
+    /* getters & setters */
 
     public PrintWriter getOutput() {
         return output;

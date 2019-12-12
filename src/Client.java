@@ -1,14 +1,24 @@
+import java.io.IOException;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+/**
+ * Client class
+ */
 public class Client {
-    private Socket socket;
-    private Scanner in;
-    private PrintWriter out;
+    private Socket socket;  //socket connected to Server
+    private Scanner in; //input from server
+    private PrintWriter out;    //write to server
     private String username;    //stored for gui purposes (it might be showed to the user)
 
-    public Client(String serverAddress) throws Exception {
+    /**
+     * Constructor (also creates the socket connection)
+     * @param serverAddress ip address of the Server (format like "192.168.0.1")
+     * @throws IOException Thrown when creating the socket or when initializing input & output sources
+     */
+    public Client(String serverAddress) throws IOException {
         socket = new Socket(serverAddress, 58901);
         in = new Scanner(socket.getInputStream());
         out = new PrintWriter(socket.getOutputStream(), true);
@@ -72,33 +82,35 @@ public class Client {
         }
     }
 
+    /**
+     * Function that manages the set of all the ships based on the Server messages
+     */
     private void setShips() {
-        boolean finished = false;
+        boolean boatsFinished = false;
         String message;
         Scanner inputTastiera = new Scanner(System.in);
 
-        while (!finished) {
+        while (!boatsFinished) {
             try {
                 message = inputTastiera.nextLine();
                 out.println(message);
-                System.out.println(message);
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
             try {
-                while (!in.hasNextLine()) {}    //wait for server answer
+                while (!in.hasNextLine()) {
+                }    //wait for server answer
 
                 message = in.nextLine();
 
                 System.out.println("Message from server: " + message);
 
-                /*if(message.startsWith("PING"))
-                    out.println("PONG");
-                else */if (message.startsWith("OK")) {
+                if (message.startsWith("OK")) {
+                    //System.out.println(message);
                     continue;
                 } else if (message.startsWith("READY")) {
-                    finished = true;
+                    boatsFinished = true;
                 } else if (message.startsWith("ERROR 1")) {
                     System.out.println("Invalid boat position");
                 } else if (message.startsWith("ERROR 2")) {
@@ -109,6 +121,24 @@ public class Client {
             }
         }
         System.out.println("Finished ship set");
+        waitForOpponent();
+    }
+
+    /**
+     * Function that loops until the Server says that the game attacks can start (using PLAY command)
+     */
+    private void waitForOpponent() {
+        while (true) {
+            while (!in.hasNextLine()) {
+            }    //wait for server input
+
+            String message = in.nextLine();
+
+            System.out.println("Message from server: " + message);
+
+            if (message.startsWith("PLAY")) break;
+            else System.out.println(message);
+        }
     }
 
     public static void main(String[] args) throws Exception {

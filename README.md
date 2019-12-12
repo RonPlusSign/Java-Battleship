@@ -37,7 +37,7 @@ abcd are the number of ships to position, ordered by length
 ## Response Protcol
 The response is a simple string with a status update:
 
-* `PLAY` game has been created
+* `PLAY` both players grid are set, game management can start (clients can start listening for commands)
 * `HIT` selected coordinates had a boat
 * `MISS` selected coordinates were empty
 * `SUNK` remote boat was fully hit, and then sunk
@@ -53,9 +53,10 @@ The response is a simple string with a status update:
 ### Error status codes
 * `1` Invalid boat position [SET]
 * `2` Selected boat size not available [SET]
-* `3` Selected tile doesn't contain a boat [DELETE]
+* `3` Invalid orientation [SET]
 * `4` Unknown message
 * `5` Connection error
+* `6` Selected tile doesn't contain a boat [DELETE]
 
 ---
 ## Game matrix

@@ -1,10 +1,18 @@
 import java.io.IOException;
 
+/**
+ * Class that manages a game between 2 Players
+ */
 class Game implements Runnable {
-    private Player currentPlayer, opponent;
-    private final int maxGrid = 15;
+    private Player currentPlayer, opponent; //players
+    private final int maxGrid = 15; //grid length
     private SyntaxChecker syntaxChecker;
 
+    /**
+     * Constructor
+     * @param currentPlayer first player
+     * @param opponent second player
+     */
     public Game(Player currentPlayer, Player opponent) {
         this.currentPlayer = currentPlayer;
         this.opponent = opponent;
@@ -15,6 +23,9 @@ class Game implements Runnable {
         this.syntaxChecker = new SyntaxChecker(maxGrid);
     }
 
+    /**
+     * Main function that runs all the main functions in order
+     */
     @Override
     public void run() {
 
@@ -23,7 +34,6 @@ class Game implements Runnable {
                 System.out.println("ERROR 5 Connection error");
             } else {
                 //make users position its grid
-                String shipsConcat = "";
                 positionShips();
 
                 manageGame();   //main function
@@ -35,21 +45,22 @@ class Game implements Runnable {
         try {   //when game finishes
             currentPlayer.getSocket().close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
         try {
             opponent.getSocket().close();
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * Function handling the game logic
+     * Function that handles the event logic
      * See README.md for more info about the protocol
      *
      * @param event command from the user
      */
-
-    private void elaborateUserMove(String event) throws Exception {
+    private void elaborateUserMove(String event) throws IllegalArgumentException {
 
         if (event.startsWith("DELETE")) {
             //If the message has the correct Format
@@ -72,12 +83,7 @@ class Game implements Runnable {
             syntaxChecker.checkCorrectMessage(x, y);
             opponent.fire(x, y);
         }
-        //SET action
-        else if (event.startsWith("SET")) {     //WARNING: THIS MIGHT BE DELETED BECAUSE SET IS DONE ONLY BEFORE GAME STARTS
-            //If the message has the correct Format
-            set(event, currentPlayer);
-        }
-        //Neither "DELETE nor ""FIRE" nor "SET"
+        //Neither "DELETE" nor "FIRE"
         else {
             throw new IllegalArgumentException("ERROR 4 Command not valid");
         }
@@ -85,6 +91,9 @@ class Game implements Runnable {
         System.out.println("EVENT: " + event);
     }
 
+    /**
+     * Function that handles the game turnament logic
+     */
     private void manageGame() {
         while (clientsConnected()) {
             try {
@@ -161,10 +170,14 @@ class Game implements Runnable {
         return true;
     }
 
+    /**
+     * Function that manages clients ships grid setup logic
+     */
     private void positionShips(){
-        String shipsConcat = "", command;
+        StringBuilder shipsConcat = new StringBuilder();
+        String command;
 
-        for (int n: Player.getStartingShipList()) { shipsConcat += String.valueOf(n); }
+        for (int n: Player.getStartingShipList()) { shipsConcat.append(n); }
 
         //tell clients to position their ships
         try {
@@ -181,41 +194,14 @@ class Game implements Runnable {
 
         System.out.println("Starting positioning players ships");
 
-        //listen for set messages
-        while(!currentPlayer.isGridReady() && !opponent.isGridReady()){ //&& clientsConnected()
+        //start threads to listen for multiple input streams without waiting
+        new Thread(new GridSetter(currentPlayer, syntaxChecker)).start();
+        new Thread(new GridSetter(opponent, syntaxChecker)).start();
 
-            while (!currentPlayer.getInput().hasNextLine() || !opponent.getInput().hasNextLine()){} // && clientsConnected()) {}
-
-            try {
-                if(currentPlayer.getInput().hasNextLine()){
-                    command = currentPlayer.getInput().nextLine();
-
-                    if (command != null && command.startsWith("SET")) {
-                        System.out.println("SET command received from " + currentPlayer.getName() + ": " + command);
-                        set(command, currentPlayer);
-                    }
-                }
-                else if(opponent.getInput().hasNextLine()){
-                    command = opponent.getInput().nextLine();
-                    if (command != null && command.startsWith("SET")) {
-                        System.out.println("SET command received from " + opponent.getName() + ": " + command);
-                        set(command, opponent);
-                    }
-                }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
-
-        }
+        //wait until both players finished their positioning
+        while(!(currentPlayer.isGridReady() && opponent.isGridReady())){}
 
         System.out.println("Grid positioning finished");
-
-        try{
-            currentPlayer.getOutput().println("READY");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
 
         try{
             opponent.getOutput().println("READY");
@@ -224,28 +210,4 @@ class Game implements Runnable {
         }
     }
 
-    private void set(String event, Player player) {
-        syntaxChecker.checkCorrectMessageFormat("SET", event);
-
-        int x = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
-        int length = Integer.parseInt(String.valueOf(event.charAt(8)));
-        char orientation = event.charAt(9);
-
-        syntaxChecker.checkCorrectMessage(x, y, length, orientation);
-        try{
-            //if an exception is thrown by player.set, it means that its parameters are invalid
-            player.set(x, y, length, orientation);
-
-            player.getOutput().println("OK");
-        } catch (IllegalArgumentException e){
-            if(e.getMessage().startsWith("ERROR 1")){
-                player.getOutput().println(e.getMessage());
-            }
-            else if(e.getMessage().startsWith("ERROR 2")){
-                player.getOutput().println(e.getMessage());
-            }
-            else e.printStackTrace();
-        }
-    }
 }
