@@ -1,68 +1,149 @@
-## Request Protocol 
+# Java Battleship Server
+
+### This is just the server of the application, for the client go to:
+#### https://github.com/regi18/vue-battleship-gui
+
+---
+
+## Basic principles
+
+The protocol is based on a simple request-response form. The message format is as follows:
+
+REQUEST
+```
+CMD <sp> MSG
+```
+
+RESPONSE
+```json
+{
+ "cmd" : "...",
+ "msg" : "..."
+}
+```
+
+the msg key can contain an object, for example on the HIT response:
+```json
+{
+ "cmd" : "HIT",
+ "msg" : 
+   {
+    "row" : "...",
+    "col" : "..."
+   }
+}
+```
+ 
+
+where `<sp>` is a simple space, `CMD` is the command, and `MSG` is the request/response body (the `msg` key is optional)
+
+---
+
+## Requests 
 
 Create boat:
 ```
-SET xxyylo
+SET iijjlo
 ```
-* `xx` is a char representing the x coordinate of the boat (2 char length)
-* `yy` is the y coordinate (2 char length)
+* `ii` is a char representing the row coordinate of the boat (2 char length)
+* `jj` is the column coordinate (2 char length)
 * `l` is the lenght of the boat (1 char length)
 * `o` is the orientation of the boat (1 char, H Horizontal, V Vertical)
 
 Fire boat:
 ```
-FIRE xxyy
+FIRE iijj
 ```
-* `xx` x coordinate (2 char length)
-* `yy` y coordinate (2 char length)
+* `ii` row coordinate (2 char length)
+* `jj` column coordinate (2 char length)
 
 Delete boat:
 ```
-DELETE xxyy
+DELETE iijj
 ```
-* `xx` x coordinate (2 char length)
-* `yy` y coordinate (2 char length)
+* `ii` row coordinate (2 char length)
+* `jj` column coordinate (2 char length)
 
-Ask client to create its grid:
+Asks for grid infos:
 ```
-GRID abcd
+GRID
 ```
-abcd are the number of ships to position, ordered by length
-* a: number of boats of length 2
-* b: number of boats of length 3
-* c: number of boats of length 4
-* d: number of boats of length 5
+This interrogates the server, which will respond with the corresponding infos (more in the responses)
+
+Tells the server that the client has all the ships set and is ready to play:
+```
+READY
+```
+[ possible answers are `WAIT` or `PLAY` or `ERROR`]
 
 ---
-## Response Protcol
-The response is a simple string with a status update:
+## Responses
+the documentation is structured like:
+* `CMD`
+  * `MSG`
 
-* `PLAY` both players grid are set, game management can start (clients can start listening for commands)
+#### Entry point (player are setting ships)
+
+* `WAIT` wait for opponent (to finish positioning ships)
+* `GRID` answer for the a `GRID` request
+  * `{ length: l, ships: [...] }`
+    * `length`: size of the grid
+    * `ships`: is the ships array (of integers)
+
+#### Game (both players are in the game)
+
+* `PLAY` game can begin  (needs to be sent to all players)
 * `HIT` selected coordinates had a boat
+   * `{ row: i, col: j }`
 * `MISS` selected coordinates were empty
-* `SUNK iijjlo` remote boat was fully hit, and then sunk. (the message contains the coordinates for the head of the ship + length and orientation)
-* `WAIT` wait for opponent
-* `READY` the player is ready to start playing (ship grid is completely set)
+   * `{ row: i, col: j }`
+* `SUNK` remote boat was fully hit, and then sunk. (the message contains the coordinates for the head of the ship + length and orientation)
+   * `{ row: i, col: j, length: l, orientation: "..." }`
+* `TURN`
+  * msg: `false` opponent's turn
+  * msg: `true` your turn
+
+#### Universal (this are always valid)
+
 * `LOST` you lost the game
 * `WON` you won the game
-* `ERROR <code> <msg>` unsuccessful command
-* `OK <msg>` successful command
-* `TURN` Tells to the client that is it's turn
-* `MESSAGE <msg>` A simple message
-
-### Error status codes
-* `1` Invalid boat position [SET]
-* `2` Selected boat size not available [SET]
-* `3` Invalid orientation [SET]
-* `4` Unknown message
-* `5` Connection error
-* `6` Selected tile doesn't contain a boat [DELETE]
+* `ERROR`
+  * `{ cod: "...", msg: "..." }`
+    * `cod`: error status code
+    * `msg`: error message
+* `OK` successful command
+  * `{ cod: "...", msg: "..." }`
+    * `cod`: success status code
+    * `msg`: success message
 
 ---
-## Game matrix
-The server saves the status of each player and its matrix. Each tile of the matrix is an object composed like:
-```
-Ship ship = new Ship();
-Boolean isHit = false;
-```
+### Error status codes
+
+format: `abb` the first digit (a) is the category, while the other digits (bb) represent the error itself
+
+###### POSITIONING SHIPS [category: 1]
+ * `00` Invalid boat position
+ * `01` Selected boat size not available
+ * `02` Selected tile doesn't contain a boat
+ * `03` READY command not valid, you still have ships remaining
+ 
+###### GAME [category: 2]
+ 
+
+###### UNIVERSAL [category: 9]
+ * `00` Unknown message
+ * `01` Selected coordinates invalid
+
+---
+### Success status codes
+
+format: `abb` the first digit (a) is the category, while the other digits (bb) represent the error itself
+
+###### POSITIONING SHIPS [category: 1]
+ * `00` Ship positioned correctly
+ 
+###### GAME [category: 2]
+
+###### UNIVERSAL [category: 9]
+ * `00` OK
 
