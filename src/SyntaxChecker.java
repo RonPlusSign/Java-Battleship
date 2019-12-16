@@ -9,7 +9,7 @@ class SyntaxChecker {
     }
 
     /**
-     * Function which check the validity of the FIRE message
+     * Function which checks the validity of the FIRE message
      *
      * @param x X Axys
      * @param y Y Axys
@@ -21,7 +21,7 @@ class SyntaxChecker {
     }
 
     /**
-     * Function which check the validity of the SET message
+     * Function which checks the validity of the SET message
      *
      * @param x           X Axys
      * @param y           Y Axys

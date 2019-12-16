@@ -59,16 +59,13 @@ class GridSetter implements Runnable {
         char orientation = event.charAt(9);
 
         syntaxChecker.checkCorrectMessage(x, y, length, orientation);
-        try{
+
+        try {
             //if an exception is thrown by player.set, it means that its parameters are invalid
             player.set(x, y, length, orientation);
-
             player.getOutput().println("OK Added new ship of length" + length);
         } catch (IllegalArgumentException e){
-            if(e.getMessage().startsWith("ERROR 1")){
-                player.getOutput().println(e.getMessage());
-            }
-            else if(e.getMessage().startsWith("ERROR 2")){
+            if(e.getMessage().startsWith("ERROR")){
                 player.getOutput().println(e.getMessage());
             }
             else e.printStackTrace();

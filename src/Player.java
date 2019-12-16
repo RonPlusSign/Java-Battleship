@@ -218,31 +218,17 @@ class Player {
 
     /* getters & setters */
 
-    public PrintWriter getOutput() {
-        return output;
-    }
+    public PrintWriter getOutput() { return output; }
 
-    public Scanner getInput() {
-        return input;
-    }
+    public Scanner getInput() { return input; }
 
-    public String getName() {
-        return name;
-    }
+    public String getName() { return name; }
 
-    public Socket getSocket() {
-        return socket;
-    }
+    public Socket getSocket() { return socket; }
 
-    public void setOpponent(Player opponent) {
-        this.opponent = opponent;
-    }
+    public void setOpponent(Player opponent) { this.opponent = opponent; }
 
-    public static int[] getStartingShipList() {
-        return startingShipList;
-    }
+    public static int[] getStartingShipList() { return startingShipList; }
 
-    public int[] getShipList() {
-        return shipList;
-    }
+    public int[] getShipList() { return shipList; }
 }
