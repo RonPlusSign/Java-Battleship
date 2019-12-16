@@ -41,7 +41,7 @@ class Player {
         this.name = name;
         gameGrid = new Tile[size][size];
 
-        // Initalize tiles
+        // Initialize tiles
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
                 gameGrid[i][j] = new Tile();
@@ -110,7 +110,7 @@ class Player {
     }
 
     public void delete(int x, int y) throws IllegalArgumentException {
-        if (gameGrid[x][y] == null) throw new IllegalArgumentException("ERROR 3 Selected tile doesn't contain a boat");
+        if (gameGrid[x][y] == null) throw new IllegalArgumentException("ERROR 6 Selected tile doesn't contain a boat");
         else {
             int xInit = gameGrid[x][y].getShip().getX();
             int yInit = gameGrid[x][y].getShip().getY();
@@ -118,7 +118,11 @@ class Player {
             char orientation = gameGrid[x][y].getShip().getOrientation();
 
             for (int i = 0; i < length; i++) {
-                //TODO: delete ship
+                if (orientation == 'H') {
+                    gameGrid[xInit+i][yInit].deleteShip();
+                } else{
+                    gameGrid[xInit][yInit+i].deleteShip();
+                }
             }
 
             setAvailability(xInit, yInit, length, orientation, true);

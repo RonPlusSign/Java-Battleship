@@ -18,6 +18,8 @@ public class Tile {
         this.ship=ship;
     }
 
+    protected void deleteShip() { this.ship = null; }
+
     /**
      * Hit the current tile
      * @return  if the shot is successfull (water -> false, hit -> true)
@@ -29,14 +31,6 @@ public class Tile {
             return true;
         }
         else return false;
-    }
-
-    /**
-     * Check if the current tile is hit
-     * @return value
-     */
-    public boolean isHit(){
-        return isHit;
     }
 
     /**
@@ -52,5 +46,13 @@ public class Tile {
 
     public boolean isAvailable() {
         return available;
+    }
+
+    /**
+     * Check if the current tile is hit
+     * @return value
+     */
+    public boolean isHit(){
+        return isHit;
     }
 }

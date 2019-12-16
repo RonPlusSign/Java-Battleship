@@ -40,7 +40,7 @@ The response is a simple string with a status update:
 * `PLAY` both players grid are set, game management can start (clients can start listening for commands)
 * `HIT` selected coordinates had a boat
 * `MISS` selected coordinates were empty
-* `SUNK` remote boat was fully hit, and then sunk
+* `SUNK iijjlo` remote boat was fully hit, and then sunk. (the message contains the coordinates for the head of the ship + length and orientation)
 * `WAIT` wait for opponent
 * `READY` the player is ready to start playing (ship grid is completely set)
 * `LOST` you lost the game
