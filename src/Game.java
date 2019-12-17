@@ -36,8 +36,8 @@ class Game implements Runnable {
                 while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {
                 }    //wait for clients to set their grid layout
 
-                currentPlayer.getOutput().println("PLAY");
-                opponent.getOutput().println("PLAY");
+                currentPlayer.getOutput().println("{\"cmd\" : \"PLAY\"}");
+                opponent.getOutput().println("{\"cmd\" : \"PLAY\"}");
                 manageGame();   //main function
             }
         } catch (Exception e) {
@@ -57,54 +57,54 @@ class Game implements Runnable {
     }
 
     /**
-     * Function that handles the event logic
-     * See README.md for more info about the protocol
-     *
-     * @param event command from the user
-     */
-    private void elaborateUserMove(String event) throws IllegalArgumentException {
-
-        //FIRE action
-        if (event.startsWith("FIRE")) {
-            //If the message has the correct Format
-            syntaxChecker.checkCorrectMessageFormat("FIRE", event);
-
-            int x = Integer.parseInt(String.valueOf(event.charAt(5)).concat(String.valueOf(event.charAt(6))));
-            int y = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
-
-            syntaxChecker.checkCorrectMessage(x, y);
-            opponent.fire(x, y);
-        }
-        //Neither "DELETE" nor "FIRE"
-        else {
-            throw new IllegalArgumentException("ERROR 900 Unknown command");
-        }
-
-        System.out.println("EVENT: " + event);
-    }
-
-    /**
      * Function that handles the game turnament logic
+     * See README.md for more info about the protocol
      */
     private void manageGame() {
         while (clientsConnected()) {
             try {
                 //Loops until the move is valid
                 while (true) {
-                    // Is your turn
-                    currentPlayer.getOutput().println("{\"msg\" : \"TURN\"}");
+                    // Is your turn: TURN true
+                    currentPlayer.getOutput().println("{\"cmd\" : \"TURN\", " +
+                            "\"msg\" : true }");
+                    // Is not your turn: TURN false
+                    opponent.getOutput().println("{\"cmd\" : \"TURN\", " +
+                            "\"msg\" : false }");
 
                     try {
                         String command = currentPlayer.getInput().nextLine();
                         System.out.println("Command received ---> " + currentPlayer.getName() + ": " + command);
 
-                        elaborateUserMove(command);
-                        currentPlayer.getOutput().println("OK " + command);
+                        //during this part of the game, Client can only request for FIRE
+                        if (command.startsWith("FIRE")) {
+                            //If the message has the correct Format
+                            syntaxChecker.checkCorrectMessageFormat("FIRE", command); //TODO: add possibility to send ERROR <code> to Client every time an Exception could be thrown
 
-                        //If the move is valid then exit the loop, otherwise repeat the command request
-                        break;
+                            int x = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
+                            int y = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
+
+                            syntaxChecker.checkCorrectMessage(x, y);
+
+                            if (!opponent.fire(x, y)) {  //fire returns true if a boat is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
+                                //if miss, exit the loop and swap the players. Otherwise the player has to fire again
+                                break;
+                            } else { //player.fire(...) already checks if the ship is SUNK and warns the Clients
+
+                                /*TODO: check if the player won the game
+                                ** 1. Add player.hasWon()
+                                ** 2. check if player.hasWon()
+                                ** 3. if true: send "WIN" to currentPlayer and "LOST" to opponent
+                                * */
+
+                            }
+                        }
+                        //If the event wasn't FIRE
+                        else {  //If the move is valid then exit the loop, otherwise an exception is thrown and Client must send a new FIRE request
+                            throw new IllegalArgumentException("ERROR Invalid command");    //TODO: might add a new type of error to manage this (Client sent a request that isn't a FIRE)
+                        }
+
                     } catch (Exception e) {
-
                         currentPlayer.getOutput().println(e.getMessage() + " (Type another command)");
 
                     }
@@ -119,7 +119,6 @@ class Game implements Runnable {
             } finally {
                 if (!clientsConnected()) {
                     System.out.println("ERROR 5 Connection error");
-                    break;
                 }
             }
         }

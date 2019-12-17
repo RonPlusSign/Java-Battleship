@@ -68,21 +68,39 @@ class Player {
      *
      * @param x X Axys
      * @param y Y Axys
+     * @return true if the player hit a boat, false otherwise
      */
-    public void fire(int x, int y) {
-        if (gameGrid[x][y].hit()) {
+    public boolean fire(int x, int y) {
+        String message;
 
-            output.print("HIT " + String.format("%02d", x) + String.format("%02d", y));
+        if (gameGrid[x][y].hit()) {
+            message = "{\"cmd\" : \"HIT\"," +
+                    "\"msg\" : {\"row\" : " + String.format("%02d", x) + ", \"col\" : " + String.format("%02d", y) + " } }";
+
+            //send HIT to both players
+            output.println(message);
+            opponent.output.println(message);
 
             if (gameGrid[x][y].getShip().isSunk()) {
+                message = "{\"cmd\" : \"SUNK\"," +
+                        "\"msg\" : {" +
+                        "\"row\" : " + String.format("%02d", gameGrid[x][y].getShip().getX()) +
+                        ", \"col\" : " + String.format("%02d", gameGrid[x][y].getShip().getY()) +
+                        ", \"length\" : " + gameGrid[x][y].getShip().getLength() +
+                        ", \"orientation\" :  " + gameGrid[x][y].getShip().getOrientation() +
+                        " } }";
 
-                output.println("SUNK " + String.format("%02d", gameGrid[x][y].getShip().getX()) +
-                        String.format("%02d", gameGrid[x][y].getShip().getY()) +
-                        gameGrid[x][y].getShip().getLength() +
-                        gameGrid[x][y].getShip().getOrientation());
-            } else output.println();
+                //sent SUNK to both players
+                output.println(message);
+                opponent.output.println(message);
+            }
+            return true;
         } else {
-            output.println("MISS " + String.format("%02d", x) + String.format("%02d", y));
+            message = "{\"cmd\" : \"MISS\"," +
+                    "\"msg\" : {\"row\" : " + String.format("%02d", x) + ", \"col\" : " + String.format("%02d", y) + " } }";
+            output.println(message);
+            opponent.output.println(message);
+            return false;
         }
     }
 
