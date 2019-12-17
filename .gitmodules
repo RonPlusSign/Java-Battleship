@@ -1,0 +1,3 @@
+[submodule "vue-battleship-gui"]
+	path = vue-battleship-gui
+	url = https://github.com/regi18/vue-battleship-gui
