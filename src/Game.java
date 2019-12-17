@@ -10,8 +10,9 @@ class Game implements Runnable {
 
     /**
      * Constructor
+     *
      * @param currentPlayer first player
-     * @param opponent second player
+     * @param opponent      second player
      */
     public Game(Player currentPlayer, Player opponent) {
         this.currentPlayer = currentPlayer;
@@ -20,7 +21,7 @@ class Game implements Runnable {
         this.currentPlayer.setOpponent(opponent);
         this.opponent.setOpponent(currentPlayer);
 
-        this.syntaxChecker = new SyntaxChecker(maxGrid);
+        this.syntaxChecker = new SyntaxChecker();
     }
 
     /**
@@ -28,11 +29,15 @@ class Game implements Runnable {
      */
     @Override
     public void run() {
-
         try {
             if (!clientsConnected()) {
-                System.out.println("ERROR 5 Connection error");
+                System.out.println("ERROR 05 Connection error");
             } else {
+                while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {
+                }    //wait for clients to set their grid layout
+
+                currentPlayer.getOutput().println("PLAY");
+                opponent.getOutput().println("PLAY");
                 manageGame();   //main function
             }
         } catch (Exception e) {
@@ -59,16 +64,6 @@ class Game implements Runnable {
      */
     private void elaborateUserMove(String event) throws IllegalArgumentException {
 
-        if (event.startsWith("DELETE")) {
-            //If the message has the correct Format
-            syntaxChecker.checkCorrectMessageFormat("DELETE", event);
-
-            int x = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
-            int y = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
-
-            syntaxChecker.checkCorrectMessage(x, y);
-            currentPlayer.delete(x, y);
-        }
         //FIRE action
         if (event.startsWith("FIRE")) {
             //If the message has the correct Format
@@ -82,7 +77,7 @@ class Game implements Runnable {
         }
         //Neither "DELETE" nor "FIRE"
         else {
-            throw new IllegalArgumentException("ERROR 4 Command not valid");
+            throw new IllegalArgumentException("ERROR 900 Unknown command");
         }
 
         System.out.println("EVENT: " + event);
@@ -97,7 +92,7 @@ class Game implements Runnable {
                 //Loops until the move is valid
                 while (true) {
                     // Is your turn
-                    currentPlayer.getOutput().println("TURN");
+                    currentPlayer.getOutput().println("{\"msg\" : \"TURN\"}");
 
                     try {
                         String command = currentPlayer.getInput().nextLine();
@@ -166,7 +161,6 @@ class Game implements Runnable {
         System.out.println("OK Both players are still in the game");
         return true;
     }
-
 
 
 }

@@ -8,14 +8,13 @@ import java.util.Scanner;
  * For communication with the client the player has a socket and associated
  * Scanner and PrintWriter.
  */
-class Player implements Runnable {
+class Player {
     private String name;
     private Player opponent;
     private Socket socket;
     private Scanner input;
     private PrintWriter output;
     private Tile[][] gameGrid;
-    private SyntaxChecker syntaxChecker;
 
     /**
      * Contains the number of ships available for each length
@@ -42,7 +41,6 @@ class Player implements Runnable {
         this.socket = socket;
         this.name = name;
         gameGrid = new Tile[size][size];
-        syntaxChecker = new SyntaxChecker(Server.GRID_LENGTH);
 
         // Initialize tiles
         for (int i = 0; i < size; i++) {
@@ -61,6 +59,8 @@ class Player implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        new Thread(new PlayerGridSetter(this)).start();
     }
 
     /**
@@ -218,91 +218,6 @@ class Player implements Runnable {
         return true;
     }
 
-    /**
-     * Main Player function
-     */
-    @Override
-    public void run() {
-        positionShips();
-        if(opponent == null){
-            //palo
-        }
-    }
-
-    /**
-     * Function that manages clients ships grid setup logic
-     */
-    private void positionShips() {
-        String command;
-
-        System.out.println("Starting positioning player " + name + " ships");
-
-        while (!(isGridReady())) {
-            try {
-                if (input.hasNextLine()) {
-                    command = input.nextLine();
-
-                    if (command != null) {
-                        if (command.startsWith("GRID")) {
-                            StringBuilder shipsConcat = new StringBuilder();
-
-                            for (int n : Player.getStartingShipList()) {
-                                shipsConcat.append(n);
-                            }
-
-                            output.println("{" +
-                                    " \"cmd\" : \"GRID\"," +
-                                    " \"msg\" : \"" +
-                                    shipsConcat
-                                    + "\"" +
-                                    "}");
-                        } else if (command.startsWith("SET")) {
-                            System.out.println("SET command received from " + name + ": " + command);
-                            set(command);
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
-
-        }
-
-        System.out.println("Grid positioning finished");
-
-        try {
-            opponent.getOutput().println("READY");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * Function that sets the ship of player based on the received event
-     *
-     * @param event SET event that has to be managed
-     */
-    private void set(String event) {
-        syntaxChecker.checkCorrectMessageFormat("SET", event);
-
-        int x = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
-        int length = Integer.parseInt(String.valueOf(event.charAt(8)));
-        char orientation = event.charAt(9);
-
-        syntaxChecker.checkCorrectMessage(x, y, length, orientation);
-
-        try {
-            //if an exception is thrown by player.set, it means that its parameters are invalid
-            set(x, y, length, orientation);
-            output.println("OK Added new ship of length" + length);
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().startsWith("ERROR")) {
-                output.println(e.getMessage());
-            } else e.printStackTrace();
-        }
-    }
-
     /* getters & setters */
 
     public PrintWriter getOutput() {
@@ -331,5 +246,9 @@ class Player implements Runnable {
 
     public int[] getShipList() {
         return shipList;
+    }
+
+    public Player getOpponent() {
+        return opponent;
     }
 }

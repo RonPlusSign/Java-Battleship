@@ -4,12 +4,12 @@
 class SyntaxChecker {
     private int maxGrid;
 
-    public SyntaxChecker(int maxGrid) {
-        this.maxGrid = maxGrid;
+    public SyntaxChecker() {
+        this.maxGrid = Server.GRID_LENGTH;
     }
 
     /**
-     * Function which checks the validity of the FIRE message
+     * Function which checks the validity of the FIRE and DELETE message
      *
      * @param x X Axys
      * @param y Y Axys
