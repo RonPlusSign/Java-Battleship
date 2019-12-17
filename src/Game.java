@@ -33,9 +33,6 @@ class Game implements Runnable {
             if (!clientsConnected()) {
                 System.out.println("ERROR 5 Connection error");
             } else {
-                //make users position its grid
-                positionShips();
-
                 manageGame();   //main function
             }
         } catch (Exception e) {
@@ -170,44 +167,6 @@ class Game implements Runnable {
         return true;
     }
 
-    /**
-     * Function that manages clients ships grid setup logic
-     */
-    private void positionShips(){
-        StringBuilder shipsConcat = new StringBuilder();
-        String command;
 
-        for (int n: Player.getStartingShipList()) { shipsConcat.append(n); }
-
-        //tell clients to position their ships
-        try {
-            currentPlayer.getOutput().println("GRID " + shipsConcat);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        try {
-            opponent.getOutput().println("GRID " + shipsConcat);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        System.out.println("Starting positioning players ships");
-
-        //start threads to listen for multiple input streams without waiting
-        new Thread(new GridSetter(currentPlayer, syntaxChecker)).start();
-        new Thread(new GridSetter(opponent, syntaxChecker)).start();
-
-        //wait until both players finished their positioning
-        while(!(currentPlayer.isGridReady() && opponent.isGridReady())){}
-
-        System.out.println("Grid positioning finished");
-
-        try{
-            opponent.getOutput().println("READY");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 }

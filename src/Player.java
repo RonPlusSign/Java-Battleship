@@ -8,13 +8,14 @@ import java.util.Scanner;
  * For communication with the client the player has a socket and associated
  * Scanner and PrintWriter.
  */
-class Player {
+class Player implements Runnable {
     private String name;
     private Player opponent;
     private Socket socket;
     private Scanner input;
     private PrintWriter output;
     private Tile[][] gameGrid;
+    private SyntaxChecker syntaxChecker;
 
     /**
      * Contains the number of ships available for each length
@@ -32,14 +33,16 @@ class Player {
 
     /**
      * Constructor
+     *
      * @param socket socket object connected to Server
-     * @param name Player name
-     * @param size grid length
+     * @param name   Player name
+     * @param size   grid length
      */
     public Player(Socket socket, String name, int size) {
         this.socket = socket;
         this.name = name;
         gameGrid = new Tile[size][size];
+        syntaxChecker = new SyntaxChecker(Server.GRID_LENGTH);
 
         // Initialize tiles
         for (int i = 0; i < size; i++) {
@@ -50,13 +53,11 @@ class Player {
 
         shipList = startingShipList.clone();
 
-        // Inform clients
         System.out.println("New Client connected: " + this.name);
 
         try {
             input = new Scanner(socket.getInputStream());
             output = new PrintWriter(socket.getOutputStream(), true);
-            output.println("WELCOME " + name);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -119,9 +120,9 @@ class Player {
 
             for (int i = 0; i < length; i++) {
                 if (orientation == 'H') {
-                    gameGrid[xInit+i][yInit].deleteShip();
-                } else{
-                    gameGrid[xInit][yInit+i].deleteShip();
+                    gameGrid[xInit + i][yInit].deleteShip();
+                } else {
+                    gameGrid[xInit][yInit + i].deleteShip();
                 }
             }
 
@@ -206,6 +207,7 @@ class Player {
 
     /**
      * Function that checks if all the Player ships are positioned
+     *
      * @return true if all the ships are set, false otherwise
      */
     public boolean isGridReady() {
@@ -216,19 +218,118 @@ class Player {
         return true;
     }
 
+    /**
+     * Main Player function
+     */
+    @Override
+    public void run() {
+        positionShips();
+        if(opponent == null){
+            //palo
+        }
+    }
+
+    /**
+     * Function that manages clients ships grid setup logic
+     */
+    private void positionShips() {
+        String command;
+
+        System.out.println("Starting positioning player " + name + " ships");
+
+        while (!(isGridReady())) {
+            try {
+                if (input.hasNextLine()) {
+                    command = input.nextLine();
+
+                    if (command != null) {
+                        if (command.startsWith("GRID")) {
+                            StringBuilder shipsConcat = new StringBuilder();
+
+                            for (int n : Player.getStartingShipList()) {
+                                shipsConcat.append(n);
+                            }
+
+                            output.println("{" +
+                                    " \"cmd\" : \"GRID\"," +
+                                    " \"msg\" : \"" +
+                                    shipsConcat
+                                    + "\"" +
+                                    "}");
+                        } else if (command.startsWith("SET")) {
+                            System.out.println("SET command received from " + name + ": " + command);
+                            set(command);
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+
+        }
+
+        System.out.println("Grid positioning finished");
+
+        try {
+            opponent.getOutput().println("READY");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Function that sets the ship of player based on the received event
+     *
+     * @param event SET event that has to be managed
+     */
+    private void set(String event) {
+        syntaxChecker.checkCorrectMessageFormat("SET", event);
+
+        int x = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
+        int y = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
+        int length = Integer.parseInt(String.valueOf(event.charAt(8)));
+        char orientation = event.charAt(9);
+
+        syntaxChecker.checkCorrectMessage(x, y, length, orientation);
+
+        try {
+            //if an exception is thrown by player.set, it means that its parameters are invalid
+            set(x, y, length, orientation);
+            output.println("OK Added new ship of length" + length);
+        } catch (IllegalArgumentException e) {
+            if (e.getMessage().startsWith("ERROR")) {
+                output.println(e.getMessage());
+            } else e.printStackTrace();
+        }
+    }
+
     /* getters & setters */
 
-    public PrintWriter getOutput() { return output; }
+    public PrintWriter getOutput() {
+        return output;
+    }
 
-    public Scanner getInput() { return input; }
+    public Scanner getInput() {
+        return input;
+    }
 
-    public String getName() { return name; }
+    public String getName() {
+        return name;
+    }
 
-    public Socket getSocket() { return socket; }
+    public Socket getSocket() {
+        return socket;
+    }
 
-    public void setOpponent(Player opponent) { this.opponent = opponent; }
+    public void setOpponent(Player opponent) {
+        this.opponent = opponent;
+    }
 
-    public static int[] getStartingShipList() { return startingShipList; }
+    public static int[] getStartingShipList() {
+        return startingShipList;
+    }
 
-    public int[] getShipList() { return shipList; }
+    public int[] getShipList() {
+        return shipList;
+    }
 }

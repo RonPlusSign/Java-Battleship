@@ -15,6 +15,7 @@ public class Client {
 
     /**
      * Constructor (also creates the socket connection)
+     *
      * @param serverAddress ip address of the Server (format like "192.168.0.1")
      * @throws IOException Thrown when creating the socket or when initializing input & output sources
      */
@@ -35,45 +36,42 @@ public class Client {
         System.out.println("PLAY");
 
         while (true) {
-            String message;
+            String message = "";
             try {
                 while (true) {  //manage messages
                     if (in.hasNextLine()) {
                         message = in.nextLine();
                         System.out.println(message);
 
-                        if (message.startsWith("WELCOME")) {    //welcome message is composed by "WELCOME " + userID, generated Server-side
-                            username = message.substring(8);    //8 is the first char after "WELCOME "
-                        } else if (message.startsWith("GRID")) {
+                        if (message.startsWith("GRID")) {
                             System.out.println("Set your ships");
                             //TODO: implement here GUI ships positioning using number of boats
                             //GRID command is followed by the number of boats. See README.md for more info
 
                             setShips();
 
-                        } else if (message.contains("PING")) {
-                            out.println("PONG");
-                        } else if (message.startsWith("WIN")) {
-                            System.out.println("YOU WIN!");
-                            //instead of closing connection, we could ask the user if he wants to play again
-                            //if yes, we could add the client to the server queue (using the Game class)
-                            socket.close();
-                        } else if (message.startsWith("LOST")) {
-                            //instead of closing connection, we could ask the user if he wants to play again
-                            //if yes, we could add the client to the server queue (using the Game class)
-                            System.out.println("YOU LOST :(");
-                            socket.close();
-                        } else if (message.startsWith("TURN")) {
-                            try {
-                                Scanner inputTastiera = new Scanner(System.in);
-                                message = inputTastiera.nextLine();
-                                out.println(message);
-                            } catch (Exception e) {
-                                e.printStackTrace();
-                            }
+                        }
+                    } else if (message.startsWith("WIN")) {
+                        System.out.println("YOU WIN!");
+                        //instead of closing connection, we could ask the user if he wants to play again
+                        //if yes, we could add the client to the server queue (using the Game class)
+                        socket.close();
+                    } else if (message.startsWith("LOST")) {
+                        //instead of closing connection, we could ask the user if he wants to play again
+                        //if yes, we could add the client to the server queue (using the Game class)
+                        System.out.println("YOU LOST :(");
+                        socket.close();
+                    } else if (message.startsWith("TURN")) {
+                        try {
+                            Scanner inputTastiera = new Scanner(System.in);
+                            message = inputTastiera.nextLine();
+                            out.println(message);
+                        } catch (Exception e) {
+                            e.printStackTrace();
                         }
                     }
                 }
+
             } catch (Exception e) {
                 System.out.println("Connection to server lost.");
                 socket.close();

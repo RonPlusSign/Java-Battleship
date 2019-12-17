@@ -9,7 +9,7 @@ import java.util.concurrent.Executors;
 public class Server {
     private static ArrayList<Player> clientsQueue = new ArrayList<>();
     private static int clientCount = 0;
-    private static final int GRID_LENGTH = 21,
+    protected static final int GRID_LENGTH = 15,
             MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 
     public static void main(String[] args) {
@@ -18,8 +18,11 @@ public class Server {
             ExecutorService pool = Executors.newFixedThreadPool(MAX_GAMES_NUMBER);
             while (true) {
                 Socket newSocket = listener.accept();
-                if (newSocket.isConnected())
-                    clientsQueue.add(new Player(newSocket, nextPlayerID(), GRID_LENGTH));
+                if (newSocket.isConnected()) {
+                    Player player = new Player(newSocket, nextPlayerID(), GRID_LENGTH);
+                    clientsQueue.add(player);
+                    new Thread(player).start();
+                }
 
                 if (clientsQueue.size() >= 2) {                                 //if there are at least 2 players in queue, start a game (checking their connection before starting)
                     try {
@@ -55,10 +58,6 @@ public class Server {
 
         try {
             player.getOutput().println("PING Test connessione di " + player.getName());
-            if (player.getInput().hasNextLine()) {
-                if (player.getInput().nextLine().contains("PONG"))
-                    isAlive = true;
-            }
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
