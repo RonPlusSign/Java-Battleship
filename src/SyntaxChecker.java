@@ -17,7 +17,12 @@ class SyntaxChecker {
      */
     public void checkCorrectMessage(int x, int y) throws IllegalArgumentException {
         if (!(x >= 0 && x < maxGrid && y >= 0 && y < maxGrid))
-            throw new IllegalArgumentException("ERROR 1 Invalid Coordinates");
+            throw new IllegalArgumentException(
+                    "{ \"cmd\" : \"ERROR\"" +
+                            ", \"msg\" : { " +
+                            "\"cod\" : \"901\"" +
+                            ",\"msg\" : \"Invalid coordinates\" }}"
+            );
     }
 
     /**
@@ -31,9 +36,19 @@ class SyntaxChecker {
      */
     public void checkCorrectMessage(int x, int y, int length, char orientation) throws IllegalArgumentException {
         checkCorrectMessage(x, y);
-        if (length < 2 || length > 5) throw new IllegalArgumentException("ERROR 2 Invalid Length");
+        if (length < 2 || length > 5) throw new IllegalArgumentException(
+                "{ \"cmd\" : \"ERROR\"" +
+                        ", \"msg\" : { " +
+                        "\"cod\" : \"101\"" +
+                        ",\"msg\" : \"Selected ship length is not available\" }}"
+        );
         if (orientation != 'H' && orientation != 'V')
-            throw new IllegalArgumentException("ERROR 3 Invalid Orientation. Select H or V");
+            throw new IllegalArgumentException(
+                    "{ \"cmd\" : \"ERROR\"" +
+                            ", \"msg\" : { " +
+                            "\"cod\" : \"104\"" +
+                            ",\"msg\" : \"Invalid Orientation (Select H or V)\" }}"
+            );
     }
 
     /**
@@ -47,16 +62,31 @@ class SyntaxChecker {
         //DELETE message
         if (nameMessage.equals("DELETE")) {
             if (!(String.valueOf(message.charAt(6)).equals(" ") && message.length() == 11))
-                throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
+                throw new IllegalArgumentException(
+                        "{ \"cmd\" : \"ERROR\"" +
+                                ", \"msg\" : { " +
+                                "\"cod\" : \"900\"" +
+                                ",\"msg\" : \"Invalid message format\" }}"
+                );
         }
         //FIRE message
         else if (nameMessage.equals("FIRE")) {
             if (!(String.valueOf(message.charAt(4)).equals(" ") && message.length() == 9))
-                throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
+                throw new IllegalArgumentException(
+                        "{ \"cmd\" : \"ERROR\"" +
+                                ", \"msg\" : { " +
+                                "\"cod\" : \"900\"" +
+                                ",\"msg\" : \"Invalid message format\" }}"
+                );
         }
         //SET message
         else if (!(String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10))
-            throw new IllegalArgumentException("ERROR 4 Invalid Message Format");
+            throw new IllegalArgumentException(
+                    "{ \"cmd\" : \"ERROR\"" +
+                            ", \"msg\" : { " +
+                            "\"cod\" : \"900\"" +
+                            ",\"msg\" : \"Invalid message format\" }}"
+            );
     }
 
 

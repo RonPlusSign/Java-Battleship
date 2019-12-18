@@ -5,7 +5,6 @@ import java.io.IOException;
  */
 class Game implements Runnable {
     private Player currentPlayer, opponent; //players
-    private final int maxGrid = 15; //grid length
     private SyntaxChecker syntaxChecker;
 
     /**
@@ -31,7 +30,7 @@ class Game implements Runnable {
     public void run() {
         try {
             if (!clientsConnected()) {
-                System.out.println("ERROR 05 Connection error");
+                System.out.println("ERROR 902 Connection error");
             } else {
                 while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {
                 }    //wait for clients to set their grid layout
@@ -44,16 +43,7 @@ class Game implements Runnable {
             e.printStackTrace();
         }
 
-        try {   //when game finishes
-            currentPlayer.getSocket().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        try {
-            opponent.getSocket().close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println("Game finished.");
     }
 
     /**
@@ -90,18 +80,19 @@ class Game implements Runnable {
                             if (!opponent.fire(x, y)) {  //fire returns true if a boat is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
-                            } else { //player.fire(...) already checks if the ship is SUNK and warns the Clients
-
-
                             }
                         }
                         //If the event wasn't FIRE
                         else {  //If the move is valid then exit the loop, otherwise an exception is thrown and Client must send a new FIRE request
-                            throw new IllegalArgumentException("ERROR Invalid command");    //TODO: might add a new type of error to manage this (Client sent a request that isn't a FIRE)
-                        }
+                            throw new IllegalArgumentException("{\"cmd\": \"ERROR\"" +
+                                    ", \"msg\" : {" +
+                                    "\"cod\" : 900" +
+                                    ", \"msg: \" : \"Invalid command, expected FIRE (you're in game)\"" +
+                                    "} }");
+                    }
 
                     } catch (Exception e) {
-                        currentPlayer.getOutput().println(e.getMessage() + " (Type another command)");
+                        currentPlayer.getOutput().println(e.getMessage());
 
                     }
                 }
@@ -114,7 +105,7 @@ class Game implements Runnable {
                 e.printStackTrace();
             } finally {
                 if (!clientsConnected()) {
-                    System.out.println("ERROR 5 Connection error");
+                    System.out.println("ERROR 902 Connection error");
                 }
             }
         }
@@ -155,7 +146,7 @@ class Game implements Runnable {
             return false;
         }
 
-        System.out.println("OK Both players are still in the game");
+        System.out.println("[Connection OK] Both players are still in the game");
         return true;
     }
 }

@@ -56,7 +56,8 @@ public class Server {
         boolean isAlive = false;
 
         try {
-            player.getOutput().print("PING Test connessione di " + player.getName());
+            player.getOutput().print("{ \"cmd\" : \"PING\"" +
+                    ", \"msg\" : \"Test connessione di " + player.getName() + "\"}");
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());

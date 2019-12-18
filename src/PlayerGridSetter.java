@@ -50,13 +50,15 @@ public class PlayerGridSetter implements Runnable {
                             delete(command);
                         } else if (command.startsWith("READY")) {
                             if (!player.isGridReady())
-                                player.getOutput().println("ERROR 03");
+                                player.getOutput().println("{ \"cmd\" : \"ERROR\"" +
+                                        ", \"msg\" : { " +
+                                        "\"cod\" : \"103\"" +
+                                        ",\"msg\" : \"READY command not valid, you still have ships left to position\" } }");
                             else if (player.getOpponent() == null)
-                                player.getOutput().println("WAIT");
-                        } else if (player.getOpponent().isGridReady())
-                            player.getOutput().println("READY");
+                                player.getOutput().println("{\"cmd\" : \"WAIT\"}");
+                        }
                         else
-                            player.getOutput().println("WAIT");
+                            player.getOutput().println("{\"cmd\" : \"WAIT\"}");
                     }
                 }
             } catch (Exception e) {
@@ -83,12 +85,13 @@ public class PlayerGridSetter implements Runnable {
         syntaxChecker.checkCorrectMessage(x, y, length, orientation);
 
         try {
-            //if an exception is thrown by player.set, it means that its parameters are invalid
+            //if an exception is thrown by player.set(), it means that its parameters are invalid
             player.set(x, y, length, orientation);
             player.getOutput().println("{\"cmd\" : \"OK\"," +
                     "\"msg\": \"Added new ship of length " + length + "\" }");
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().startsWith("ERROR")) {
+            if (e.getMessage().contains("ERROR")) {
+                System.out.println("SET Error: " + e.getMessage());
                 player.getOutput().println(e.getMessage());
             } else e.printStackTrace();
         }
@@ -109,13 +112,14 @@ public class PlayerGridSetter implements Runnable {
         syntaxChecker.checkCorrectMessage(x, y);
 
         try {
-            //if an exception is thrown by player.set, it means that its parameters are invalid
+            //if an exception is thrown by player.delete(), it means that its parameters are invalid
             player.delete(x, y);
             player.getOutput().println("{\"cmd\" : \"OK\"" +
                     ", \"msg\": \"Removed the ship\" }");
         } catch (IllegalArgumentException e) {
-            if (e.getMessage().startsWith("ERROR")) {
-                player.getOutput().println("ERROR");
+            if (e.getMessage().contains("ERROR")) {
+                System.out.println("DELETE Error: " + e.getMessage());
+                player.getOutput().println(e.getMessage());
             } else e.printStackTrace();
         }
     }

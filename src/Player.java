@@ -24,7 +24,6 @@ class Player {
      * shipList[2] contains the number of ships of size 3
      * shipList[3] contains the number of ships of size 4
      * shipList[4] contains the number of ships of size 5
-     *
      */
     private static final int[] startingShipList = {
             1, 3, 2, 1, 1
@@ -149,15 +148,28 @@ class Player {
                 shipList[length - 2]--;
                 setAvailability(x, y, length, orientation, false);
             } else {
-                throw new IllegalArgumentException("ERROR 1 Invalid boat position");
+                throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
+                        ", \"msg\" : { " +
+                        "\"cod\" : \"100\"" +
+                        ",\"msg\" : \"Invalid ship position\" } }");
             }
         } else {
-            throw new IllegalArgumentException("ERROR 2 Selected boat size not available");
+            throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
+                            ", \"msg\" : { " +
+                            "\"cod\" : \"101\"" +
+                            ",\"msg\" : \"Selected ship size is not available\" } }"
+            );
         }
     }
 
     public void delete(int x, int y) throws IllegalArgumentException {
-        if (gameGrid[x][y] == null) throw new IllegalArgumentException("ERROR 6 Selected tile doesn't contain a boat");
+        if (gameGrid[x][y] == null) throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
+                ", \"msg\" : { " +
+                "\"cod\" : \"102\"" +
+                ",\"msg\" : \"Selected tile doesn't contain a ship\" }}"
+
+        );
+                //"ERROR 6 Selected tile doesn't contain a boat");
         else {
             int xInit = gameGrid[x][y].getShip().getX();
             int yInit = gameGrid[x][y].getShip().getY();

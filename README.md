@@ -112,9 +112,6 @@ the documentation is structured like:
     * `cod`: error status code
     * `msg`: error message
 * `OK` successful command
-  * `{ cod: "...", msg: "..." }`
-    * `cod`: success status code
-    * `msg`: success message
 
 ---
 ### Error status codes
@@ -126,24 +123,10 @@ format: `abb` the first digit (a) is the category, while the other digits (bb) r
  * `01` Selected boat size not available
  * `02` Selected tile doesn't contain a boat
  * `03` READY command not valid, you still have ships remaining
+ * `04` Invalid Orientation (Select H or V)
  
-###### GAME [category: 2]
- 
-
-###### UNIVERSAL [category: 9]
- * `00` Unknown message
+###### GENERAL [category: 9]
+ * `00` Invalid message
  * `01` Selected coordinates invalid
-
----
-### Success status codes
-
-format: `abb` the first digit (a) is the category, while the other digits (bb) represent the error itself
-
-###### POSITIONING SHIPS [category: 1]
- * `00` Ship positioned correctly
- 
-###### GAME [category: 2]
-
-###### UNIVERSAL [category: 9]
- * `00` OK
+  * `02` Connection error
 
