@@ -19,13 +19,15 @@ class Player {
     /**
      * Contains the number of ships available for each length
      * i.e.
-     * shipList[0] contains the number of ships of size 2
-     * shipList[1] contains the number of ships of size 3
-     * shipList[2] contains the number of ships of size 4
-     * shipList[3] contains the number of ships of size 5
+     * shipList[0] contains the number of ships of size 1
+     * shipList[1] contains the number of ships of size 2
+     * shipList[2] contains the number of ships of size 3
+     * shipList[3] contains the number of ships of size 4
+     * shipList[4] contains the number of ships of size 5
+     *
      */
     private static final int[] startingShipList = {
-            3, 2, 1, 1
+            1, 3, 2, 1, 1
     };
     // Current player ship list (contains the remanining number of ships)
     private int[] shipList;
@@ -123,7 +125,7 @@ class Player {
             return true;
         } else {
             message = "{\"cmd\" : \"MISS\"," +
-                    "\"msg\" : {\"row\" : " + String.format("%02d", x) + ", \"col\" : " + String.format("%02d", y) + " } }";
+                    "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
             output.println(message);
             opponent.output.println(message);
             return false;
@@ -140,7 +142,7 @@ class Player {
      */
     public void set(int x, int y, int length, char orientation) throws IllegalArgumentException {
         // Check if selected ship is available
-        if (shipList[length - 2] > 0) {
+        if (shipList[length - 1] > 0) {
 
             if (getAvailability(x, y, length, orientation)) {
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));

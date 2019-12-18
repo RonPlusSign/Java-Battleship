@@ -1,4 +1,5 @@
-import java.net.*;
+import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -9,11 +10,11 @@ import java.util.concurrent.Executors;
 public class Server {
     private static ArrayList<Player> clientsQueue = new ArrayList<>();
     private static int clientCount = 0;
-    protected static final int GRID_LENGTH = 15,
-            MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
+    protected static final int GRID_LENGTH = 12;
+    private static final int MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 
     public static void main(String[] args) {
-        try (ServerSocket listener = new ServerSocket(58901)) {
+        try (ServerSocket listener = new ServerSocket(1337)) {
             System.out.println("Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(MAX_GAMES_NUMBER);
             while (true) {
@@ -55,7 +56,7 @@ public class Server {
         boolean isAlive = false;
 
         try {
-            player.getOutput().println("PING Test connessione di " + player.getName());
+            player.getOutput().print("PING Test connessione di " + player.getName());
 
         } catch (Exception exception) {
             System.out.println(exception.getMessage());

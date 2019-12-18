@@ -27,40 +27,41 @@ public class PlayerGridSetter implements Runnable {
                     command = player.getInput().nextLine();
 
                     if (command != null) {
-                        if (command.startsWith("GRID")) {
-                            StringBuilder shipsConcat = new StringBuilder();
 
+                        System.out.println("COMMAND FROM CLIENT: " + command);
+                        if (command.startsWith("GRID")) {
+
+                            StringBuilder msg = new StringBuilder();
                             for (int n : Player.getStartingShipList()) {
-                                shipsConcat.append(n);
+                                msg.append(n);
                             }
 
-                            player.getOutput().println("{" +
-                                    " \"cmd\" : \"GRID\"," +
-                                    " \"msg\" : \"" +
-                                    shipsConcat
-                                    + "\"" +
-                                    "}");
+                            player.getOutput().println("{ " +
+                                    " \"cmd\" : \"GRID\"" +
+                                    ", \"msg\" : {" +
+                                    "\"length\" : " + Server.GRID_LENGTH +
+                                    ", \"ships\" : \"" + msg
+                                    + "\"} }");
+
                         } else if (command.startsWith("SET")) {
                             System.out.println("SET command received from " + player.getName() + ": " + command);
                             set(command);
                         } else if (command.startsWith("DELETE")) {
                             delete(command);
-
                         } else if (command.startsWith("READY")) {
                             if (!player.isGridReady())
                                 player.getOutput().println("ERROR 03");
-                        } else if (player.getOpponent() == null)
-                            player.getOutput().println("WAIT");
-                        else if (player.getOpponent().isGridReady())
+                            else if (player.getOpponent() == null)
+                                player.getOutput().println("WAIT");
+                        } else if (player.getOpponent().isGridReady())
                             player.getOutput().println("READY");
                         else
                             player.getOutput().println("WAIT");
                     }
                 }
             } catch (Exception e) {
-                System.out.println(e.getMessage());
+                System.out.println("Exception thrown: " + e.getMessage());
             }
-
         }
         System.out.println("Grid positioning of " + player.getName() + " finished");
     }
@@ -84,7 +85,8 @@ public class PlayerGridSetter implements Runnable {
         try {
             //if an exception is thrown by player.set, it means that its parameters are invalid
             player.set(x, y, length, orientation);
-            player.getOutput().println("OK Added new ship of length " + length);
+            player.getOutput().println("{\"cmd\" : \"OK\"," +
+                    "\"msg\": \"Added new ship of length " + length + "\" }");
         } catch (IllegalArgumentException e) {
             if (e.getMessage().startsWith("ERROR")) {
                 player.getOutput().println(e.getMessage());
@@ -109,7 +111,8 @@ public class PlayerGridSetter implements Runnable {
         try {
             //if an exception is thrown by player.set, it means that its parameters are invalid
             player.delete(x, y);
-            player.getOutput().println("OK Removed the ship");
+            player.getOutput().println("{\"cmd\" : \"OK\"" +
+                    ", \"msg\": \"Removed the ship\" }");
         } catch (IllegalArgumentException e) {
             if (e.getMessage().startsWith("ERROR")) {
                 player.getOutput().println("ERROR");

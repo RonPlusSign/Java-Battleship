@@ -73,7 +73,7 @@ class Game implements Runnable {
                             "\"msg\" : false }");
 
                     try {
-                        String command = currentPlayer.getInput().nextLine();
+                        String command = currentPlayer.getInput().next();
                         System.out.println("Command received ---> " + currentPlayer.getName() + ": " + command);
 
                         //during this part of the game, Client can only request for FIRE
