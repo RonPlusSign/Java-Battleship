@@ -176,9 +176,9 @@ hs_err_pid*
 
 # Custom
 
-!.idea/libraries/
-!.idea/libraries/*.xml
-
-!lib/*.jar
+#!.idea/libraries/
+#!.idea/libraries/*.xml
+#
+#!lib/*.jar
 
 vcs.xml
