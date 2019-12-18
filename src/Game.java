@@ -86,16 +86,12 @@ class Game implements Runnable {
 
                             syntaxChecker.checkCorrectMessage(x, y);
 
+                            opponent.fire(x, y);
                             if (!opponent.fire(x, y)) {  //fire returns true if a boat is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
                             } else { //player.fire(...) already checks if the ship is SUNK and warns the Clients
 
-                                /*TODO: check if the player won the game
-                                ** 1. Add player.hasWon()
-                                ** 2. check if player.hasWon()
-                                ** 3. if true: send "WIN" to currentPlayer and "LOST" to opponent
-                                * */
 
                             }
                         }
@@ -132,7 +128,8 @@ class Game implements Runnable {
     private boolean clientsConnected() {
         if (!Server.testConnection(currentPlayer)) {
 
-            opponent.getOutput().println("WIN Opponent left the game.");
+            opponent.getOutput().println("{\"cmd\" : \"WON\"," +
+                    "\"msg\": \"Your opponent left the game. \" }");
 
             try {
                 opponent.getSocket().close();
@@ -145,7 +142,8 @@ class Game implements Runnable {
 
         } else if (!Server.testConnection(opponent)) {
 
-            currentPlayer.getOutput().println("WIN Opponent left the game");
+            currentPlayer.getOutput().println("{\"cmd\" : \"WON\"," +
+                    "\"msg\": \"Your opponent left the game. \" }");
 
             try {
                 currentPlayer.getSocket().close();
@@ -160,6 +158,4 @@ class Game implements Runnable {
         System.out.println("OK Both players are still in the game");
         return true;
     }
-
-
 }

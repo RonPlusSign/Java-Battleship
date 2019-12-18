@@ -24,11 +24,12 @@ class Player {
      * shipList[2] contains the number of ships of size 4
      * shipList[3] contains the number of ships of size 5
      */
-    private static final int[] startingShipList = new int[]{
+    private static final int[] startingShipList = {
             3, 2, 1, 1
     };
     // Current player ship list (contains the remanining number of ships)
     private int[] shipList;
+    private int shipsAlive; //number of ships that are left to the player
 
     /**
      * Constructor
@@ -50,6 +51,11 @@ class Player {
         }
 
         shipList = startingShipList.clone();
+
+        shipsAlive = 0;
+        for (int number : startingShipList) {
+            shipsAlive += number;
+        }
 
         System.out.println("New Client connected: " + this.name);
 
@@ -75,17 +81,19 @@ class Player {
 
         if (gameGrid[x][y].hit()) {
             message = "{\"cmd\" : \"HIT\"," +
-                    "\"msg\" : {\"row\" : " + String.format("%02d", x) + ", \"col\" : " + String.format("%02d", y) + " } }";
+                    "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
 
             //send HIT to both players
             output.println(message);
             opponent.output.println(message);
 
             if (gameGrid[x][y].getShip().isSunk()) {
+                shipsAlive--;
+
                 message = "{\"cmd\" : \"SUNK\"," +
                         "\"msg\" : {" +
-                        "\"row\" : " + String.format("%02d", gameGrid[x][y].getShip().getX()) +
-                        ", \"col\" : " + String.format("%02d", gameGrid[x][y].getShip().getY()) +
+                        "\"row\" : " + gameGrid[x][y].getShip().getX() +
+                        ", \"col\" : " + gameGrid[x][y].getShip().getY() +
                         ", \"length\" : " + gameGrid[x][y].getShip().getLength() +
                         ", \"orientation\" :  " + gameGrid[x][y].getShip().getOrientation() +
                         " } }";
@@ -93,6 +101,24 @@ class Player {
                 //sent SUNK to both players
                 output.println(message);
                 opponent.output.println(message);
+
+
+                if (shipsAlive == 0) {    //if the ships left are 0, the opponent WIN (the function fire() works on the player who's been hit, so Opponent is the player who sent FIRE
+                    opponent.output.println("{\"cmd\" : \"WON\"}");
+                    output.println("{\"cmd\" : \"LOST\"}");
+
+                    //Disconnect both Clients when match is finished
+                    try {
+                        socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        opponent.socket.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return true;
         } else {
@@ -268,5 +294,9 @@ class Player {
 
     public Player getOpponent() {
         return opponent;
+    }
+
+    public int getShipsAlive() {
+        return shipsAlive;
     }
 }

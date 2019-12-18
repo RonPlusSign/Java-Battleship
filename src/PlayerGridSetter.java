@@ -44,6 +44,7 @@ public class PlayerGridSetter implements Runnable {
                             System.out.println("SET command received from " + player.getName() + ": " + command);
                             set(command);
                         } else if (command.startsWith("DELETE")) {
+                            delete(command);
 
                         } else if (command.startsWith("READY")) {
                             if (!player.isGridReady())
