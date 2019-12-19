@@ -63,6 +63,7 @@ public class PlayerGridSetter implements Runnable {
                 }
             } catch (Exception e) {
                 System.out.println("Exception thrown: " + e.getMessage());
+                player.getOutput().println(e.getMessage());
             }
         }
         System.out.println("Grid positioning of " + player.getName() + " finished");
