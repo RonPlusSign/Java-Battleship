@@ -14,23 +14,25 @@ public class Tile {
         available = true;
     }
 
-    public void insertShip(Ship ship){
-        this.ship=ship;
+    public void insertShip(Ship ship) {
+        this.ship = ship;
     }
 
-    protected void deleteShip() { this.ship = null; }
+    protected void deleteShip() {
+        this.ship = null;
+    }
 
     /**
      * Hit the current tile
-     * @return  if the shot is successfull (water -> false, hit -> true)
+     *
+     * @return if the shot is successfull (water -> false, hit -> true)
      */
     public boolean hit() {
         if (ship != null) {
             isHit = true;
             ship.removeLifePoint();
             return true;
-        }
-        else return false;
+        } else return false;
     }
 
     /**
@@ -50,9 +52,10 @@ public class Tile {
 
     /**
      * Check if the current tile is hit
+     *
      * @return value
      */
-    public boolean isHit(){
+    public boolean isHit() {
         return isHit;
     }
 }

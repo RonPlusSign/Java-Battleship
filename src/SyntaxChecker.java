@@ -36,7 +36,7 @@ class SyntaxChecker {
      */
     public void checkCorrectMessage(int x, int y, int length, char orientation) throws IllegalArgumentException {
         checkCorrectMessage(x, y);
-        if (length < 2 || length > 5) throw new IllegalArgumentException(
+        if (length < 1 || length > 5) throw new IllegalArgumentException(   //ships can have a length of 1, 2, 3, 4 or 5
                 "{ \"cmd\" : \"ERROR\"" +
                         ", \"msg\" : { " +
                         "\"cod\" : \"101\"" +

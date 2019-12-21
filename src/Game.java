@@ -32,8 +32,8 @@ class Game implements Runnable {
             if (!clientsConnected()) {
                 System.out.println("ERROR 902 Connection error");
             } else {
-                while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {
-                }    //wait for clients to set their grid layout
+                while (!(currentPlayer.isGridReady() && opponent.isGridReady()))    //wait for clients to set their grid layout
+                    Thread.sleep(2000); //time is in milliseconds
 
                 currentPlayer.getOutput().println("{\"cmd\" : \"PLAY\"}");
                 opponent.getOutput().println("{\"cmd\" : \"PLAY\"}");
@@ -77,7 +77,7 @@ class Game implements Runnable {
                             syntaxChecker.checkCorrectMessage(x, y);
 
                             opponent.fire(x, y);
-                            if (!opponent.fire(x, y)) {  //fire returns true if a boat is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
+                            if (!opponent.fire(x, y)) {  //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
                             }
@@ -89,13 +89,13 @@ class Game implements Runnable {
                                     "\"cod\" : 900" +
                                     ", \"msg: \" : \"Invalid command, expected FIRE (you're in game)\"" +
                                     "} }");
-                    }
+                        }
 
                     } catch (Exception e) {
                         currentPlayer.getOutput().println(e.getMessage());
-
                     }
                 }
+
                 //swap players and activate opponent turns
                 Player temp = currentPlayer;
                 currentPlayer = opponent;
@@ -103,10 +103,6 @@ class Game implements Runnable {
 
             } catch (Exception e) {
                 e.printStackTrace();
-            } finally {
-                if (!clientsConnected()) {
-                    System.out.println("ERROR 902 Connection error");
-                }
             }
         }
     }

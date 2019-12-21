@@ -21,7 +21,7 @@ public class PlayerGridSetter implements Runnable {
 
         System.out.println("Starting positioning player " + player.getName() + " ships");
 
-        while (!(player.isGridReady())) {
+        while (true) {
             try {
                 if (player.getInput().hasNextLine()) {
                     command = player.getInput().nextLine();
@@ -29,7 +29,10 @@ public class PlayerGridSetter implements Runnable {
                     if (command != null) {
 
                         System.out.println("COMMAND FROM CLIENT: " + command);
+
                         if (command.startsWith("GRID")) {
+
+                            System.out.println("GRID command received from " + player.getName() + ": " + command);
 
                             StringBuilder msg = new StringBuilder();
                             for (int n : Player.getStartingShipList()) {
@@ -44,21 +47,33 @@ public class PlayerGridSetter implements Runnable {
                                     + "\"} }");
 
                         } else if (command.startsWith("SET")) {
+
                             System.out.println("SET command received from " + player.getName() + ": " + command);
+
                             set(command);
                         } else if (command.startsWith("DELETE")) {
+
+                            System.out.println("DELETE command received from " + player.getName() + ": " + command);
+
                             delete(command);
                         } else if (command.startsWith("READY")) {
-                            if (!player.isGridReady())
+
+                            System.out.println("READY command received from " + player.getName() + ": " + command);
+
+                            if (!player.isGridReady())  //if the player hasn't finished to position its ships
                                 player.getOutput().println("{ \"cmd\" : \"ERROR\"" +
                                         ", \"msg\" : { " +
                                         "\"cod\" : \"103\"" +
-                                        ",\"msg\" : \"READY command not valid, you still have ships left to position\" } }");
-                            else if (player.getOpponent() == null)
+                                        ",\"msg\" : \"You still have ships left to position\" } }");
+                            else if (player.getOpponent() == null) {    //if the player doesn't have an opponent yet
                                 player.getOutput().println("{\"cmd\" : \"WAIT\"}");
+                                break;
+                            } else if (!player.getOpponent().isGridReady()) {   //if the opponent's grid isn't ready
+                                player.getOutput().println("{\"cmd\" : \"WAIT\"}");
+                                break;
+                            } else  //if both players are ready, exit from the grid setting (Game is going to warn Clients to start the game (PLAY command))
+                                break;
                         }
-                        else
-                            player.getOutput().println("{\"cmd\" : \"WAIT\"}");
                     }
                 }
             } catch (Exception e) {

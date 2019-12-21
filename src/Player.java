@@ -26,7 +26,7 @@ class Player {
      * shipList[4] contains the number of ships of size 5
      */
     private static final int[] startingShipList = {
-            1, 3, 2, 1, 1
+            3, 3, 2, 1, 1
     };
     // Current player ship list (contains the remanining number of ships)
     private int[] shipList;
@@ -75,7 +75,7 @@ class Player {
      *
      * @param x X Axys
      * @param y Y Axys
-     * @return true if the player hit a boat, false otherwise
+     * @return true if the player hit a ship, false otherwise
      */
     public boolean fire(int x, int y) {
         String message;
@@ -140,12 +140,11 @@ class Player {
      * @param orientation Ship Orientation
      */
     public void set(int x, int y, int length, char orientation) throws IllegalArgumentException {
-        // Check if selected ship is available
-        if (shipList[length - 1] > 0) {
+        if (shipList[length - 1] > 0) { // Check if selected ship is available
 
             if (getAvailability(x, y, length, orientation)) {
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
-                shipList[length - 2]--;
+                shipList[length - 1]--;
                 setAvailability(x, y, length, orientation, false);
             } else {
                 throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
@@ -155,9 +154,9 @@ class Player {
             }
         } else {
             throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
-                            ", \"msg\" : { " +
-                            "\"cod\" : \"101\"" +
-                            ",\"msg\" : \"Selected ship size is not available\" } }"
+                    ", \"msg\" : { " +
+                    "\"cod\" : \"101\"" +
+                    ",\"msg\" : \"Selected ship size is not available\" } }"
             );
         }
     }
@@ -169,7 +168,6 @@ class Player {
                 ",\"msg\" : \"Selected tile doesn't contain a ship\" }}"
 
         );
-                //"ERROR 6 Selected tile doesn't contain a boat");
         else {
             int xInit = gameGrid[x][y].getShip().getX();
             int yInit = gameGrid[x][y].getShip().getY();
@@ -200,9 +198,9 @@ class Player {
      */
     private boolean getAvailability(int x, int y, int length, char orientation) {
         //Check if the ship "overflows" from the grid
-        //If the ship is Horizontally placed and its length goes outside the grid (21 columns)
+        //If the ship is Horizontally placed and its length goes outside the grid
         if (orientation == 'H' && (x + length - 1) >= gameGrid[0].length) return false;
-        //If the ship is Vertically placed and its length goes outside the grid (21 rows)
+        //If the ship is Vertically placed and its length goes outside the grid
         if (orientation == 'V' && (y + length - 1) >= gameGrid.length) return false;
 
         for (int i = 0; i < length; i++) {
@@ -226,12 +224,12 @@ class Player {
      */
     private void setAvailability(int x, int y, int length, char orientation, boolean available) {
 
-        //Loops that marks the tiles near the ship as not available (available = false;)
+        //Loops that marks the tiles near the ship as available (or not available, depending if the received parameter is true or false)
         for (int i = 0; i < length; i++) {
             //If the orientation is Horizontal
             if (orientation == 'H') {
                 //If the Ship isn't placed at the first or at the last column
-                if (((x + i) != 0) && ((x + i) != 20)) {
+                if (((x + i) != 0) && ((x + i) != Server.GRID_LENGTH - 1)) {
                     gameGrid[x + i - 1][y].setAvailable(available);
                     gameGrid[x + i + 1][y].setAvailable(available);
                 }
@@ -247,7 +245,7 @@ class Player {
             //If the orientation is Vertical
             else {
                 //If the Ship isn't placed at the first or at the last row
-                if (((y + i) != 0) && ((y + i) != 20)) {
+                if (((y + i) != 0) && ((y + i) != Server.GRID_LENGTH - 1)) {
                     gameGrid[x][y + i - 1].setAvailable(available);
                     gameGrid[x][y + i + 1].setAvailable(available);
                 }
@@ -269,10 +267,10 @@ class Player {
      * @return true if all the ships are set, false otherwise
      */
     public boolean isGridReady() {
-        for (int boatsToBeSet : shipList) {
-            if (boatsToBeSet != 0) return false;  //if there are still boats to be set, return false
+        for (int shipsToBeSet : shipList) {
+            if (shipsToBeSet != 0) return false;  //if there are still ships to be set, return false
         }
-        //if all boats have been set, return true
+        //if all ships have been set, return true
         return true;
     }
 

@@ -28,15 +28,16 @@ public class Ship {
     }
 
     /**
-        Removes one 'live' to the ship
-    */
+     * Removes one 'live' to the ship
+     */
     public void removeLifePoint() {
         if (lifePoints - 1 >= 0) --lifePoints;
     }
 
-    
+
     /**
      * Check if the ship is sunk
+     *
      * @return value
      */
     public boolean isSunk() {
