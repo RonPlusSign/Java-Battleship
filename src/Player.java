@@ -37,26 +37,13 @@ class Player {
      *
      * @param socket socket object connected to Server
      * @param name   Player name
-     * @param size   grid length
      */
-    public Player(Socket socket, String name, int size) {
+    public Player(Socket socket, String name) {
         this.socket = socket;
         this.name = name;
-        gameGrid = new Tile[size][size];
+        gameGrid = new Tile[Server.GRID_LENGTH][Server.GRID_LENGTH];
 
-        // Initialize tiles
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                gameGrid[i][j] = new Tile();
-            }
-        }
-
-        shipList = startingShipList.clone();
-
-        shipsAlive = 0;
-        for (int number : startingShipList) {
-            shipsAlive += number;
-        }
+        resetGrid();
 
         System.out.println("New Client connected: " + this.name);
 
@@ -69,6 +56,26 @@ class Player {
 
         new Thread(new PlayerGridSetter(this)).start();
     }
+
+    /**
+     * Function that resets the ships grid and the available ships
+     */
+    public void resetGrid(){
+        // Initialize tiles
+        for (int i = 0; i < Server.GRID_LENGTH; i++) {
+            for (int j = 0; j < Server.GRID_LENGTH; j++) {
+                gameGrid[i][j] = new Tile();
+            }
+        }
+
+        shipList = startingShipList.clone();
+
+        shipsAlive = 0;
+        for (int number : startingShipList) {
+            shipsAlive += number;
+        }
+    }
+
 
     /**
      * Function which fires the own tile

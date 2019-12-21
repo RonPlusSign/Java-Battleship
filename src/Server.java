@@ -20,7 +20,7 @@ public class Server {
             while (true) {
                 Socket newSocket = listener.accept();
                 if (newSocket.isConnected()) {
-                    clientsQueue.add(new Player(newSocket, nextPlayerID(), GRID_LENGTH));
+                    clientsQueue.add(new Player(newSocket, nextPlayerID()));
                 }
 
                 if (clientsQueue.size() >= 2) {                                 //if there are at least 2 players in queue, start a game (checking their connection before starting)
