@@ -43,26 +43,26 @@ where `<sp>` is a simple space, `CMD` is the command, and `MSG` is the request/r
 
 Create ship:
 ```
-SET iijjlo
+SET rrcclo
 ```
-* `ii` is a char representing the row coordinate of the ship (2 char length)
-* `jj` is the column coordinate (2 char length)
+* `rr` is the row coordinate of the ship (2 char length)
+* `cc` is the column coordinate (2 char length)
 * `l` is the lenght of the ship (1 char length)
 * `o` is the orientation of the ship (1 char, H Horizontal, V Vertical)
 
 Fire ship:
 ```
-FIRE iijj
+FIRE rrcc
 ```
-* `ii` row coordinate (2 char length)
-* `jj` column coordinate (2 char length)
+* `rr` row coordinate (2 char length)
+* `cc` column coordinate (2 char length)
 
 Delete ship:
 ```
-DELETE iijj
+DELETE rrcc
 ```
-* `ii` row coordinate (2 char length)
-* `jj` column coordinate (2 char length)
+* `rr` row coordinate (2 char length)
+* `cc` column coordinate (2 char length)
 
 Delete all ships:
 ```
@@ -100,11 +100,11 @@ the documentation is structured like:
 
 * `PLAY` game can begin  (needs to be sent to all players)
 * `HIT` selected coordinates had a ship
-   * `{ row: i, col: j }`
+   * `{ row: r, col: c }`
 * `MISS` selected coordinates were empty
-   * `{ row: i, col: j }`
+   * `{ row: r, col: c }`
 * `SUNK` remote ship was fully hit, and then sunk. (the message contains the coordinates for the head of the ship + length and orientation)
-   * `{ row: i, col: j, length: l, orientation: "..." }`
+   * `{ row: r, col: c, length: l, orientation: "..." }`
 * `TURN`
   * msg: `false` opponent's turn
   * msg: `true` your turn
