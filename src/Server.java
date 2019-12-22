@@ -27,10 +27,10 @@ public class Server {
                     try {
                         if (!testConnection(clientsQueue.get(0))) {            //check if the first player in queue still connected
                             clientsQueue.remove(0);                     //if the player isn't connected, remove it from the queue
-                        } else if (!testConnection(clientsQueue.get(1))) {     //check if the first player in queue still connected
+                        } else if (!testConnection(clientsQueue.get(1))) {     //check if the second player in queue still connected
                             clientsQueue.remove(1);                     //if the player isn't connected, remove it from the queue
                         } else {                                               //both players are still connected
-                            System.out.println("Starting the game");
+                            System.out.println("Starting a game");
                             Game game = new Game(clientsQueue.remove(0), clientsQueue.remove(0));   //ArrayList.remove(index) method returns the Player object in that position
                             pool.execute(game);
                         }
@@ -56,9 +56,9 @@ public class Server {
         boolean isAlive = false;
 
         try {
-            player.getOutput().print("{ \"cmd\" : \"PING\"" +
-                    ", \"msg\" : \"Test connessione di " + player.getName() + "\"}");
-
+            player.getOutput().println("{ \"cmd\" : \"PING\"" +
+                    ", \"msg\" : \"Testing the connection of player " + player.getName() + "\"}");
+            isAlive = true;
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }

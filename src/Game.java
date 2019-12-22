@@ -1,4 +1,7 @@
 import java.io.IOException;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Class that manages a game between 2 Players
@@ -6,6 +9,8 @@ import java.io.IOException;
 class Game implements Runnable {
     private Player currentPlayer, opponent; //players
     private SyntaxChecker syntaxChecker;
+
+    final ScheduledExecutorService pingExecutor;
 
     /**
      * Constructor
@@ -21,6 +26,9 @@ class Game implements Runnable {
         this.opponent.setOpponent(currentPlayer);
 
         this.syntaxChecker = new SyntaxChecker();
+
+        pingExecutor = Executors.newSingleThreadScheduledExecutor();
+        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 0, 3000, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -32,8 +40,10 @@ class Game implements Runnable {
             if (!clientsConnected()) {
                 System.out.println("ERROR 902 Connection error");
             } else {
-                while (!(currentPlayer.isGridReady() && opponent.isGridReady()))    //wait for clients to set their grid layout
+                while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {    //wait for clients to set their grid layout
                     Thread.sleep(2000); //time is in milliseconds
+
+                }
 
                 currentPlayer.getOutput().println("{\"cmd\" : \"PLAY\"}");
                 opponent.getOutput().println("{\"cmd\" : \"PLAY\"}");
@@ -69,7 +79,7 @@ class Game implements Runnable {
                         //during this part of the game, Client can only request for FIRE
                         if (command.startsWith("FIRE")) {
                             //If the message has the correct Format
-                            syntaxChecker.checkCorrectMessageFormat("FIRE", command); //TODO: add possibility to send ERROR <code> to Client every time an Exception could be thrown
+                            syntaxChecker.checkCorrectMessageFormat("FIRE", command);
 
                             int x = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
                             int y = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
@@ -114,6 +124,7 @@ class Game implements Runnable {
      */
     private boolean clientsConnected() {
         if (!Server.testConnection(currentPlayer)) {
+            System.out.println("[Connection ERROR] Player " + currentPlayer.getName() + " disconnected.");
 
             opponent.getOutput().println("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
@@ -128,6 +139,7 @@ class Game implements Runnable {
             return false;
 
         } else if (!Server.testConnection(opponent)) {
+            System.out.println("[Connection ERROR] Player " + opponent.getName() + " disconnected.");
 
             currentPlayer.getOutput().println("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
