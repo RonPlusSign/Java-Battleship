@@ -71,8 +71,8 @@ class Game implements Runnable {
                             //If the message has the correct Format
                             syntaxChecker.checkCorrectMessageFormat("FIRE", command); //TODO: add possibility to send ERROR <code> to Client every time an Exception could be thrown
 
-                            int x = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
-                            int y = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
+                            int x = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
+                            int y = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
 
                             syntaxChecker.checkCorrectMessage(x, y);
 

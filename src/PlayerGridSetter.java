@@ -99,8 +99,8 @@ public class PlayerGridSetter implements Runnable {
         SyntaxChecker syntaxChecker = new SyntaxChecker();
         syntaxChecker.checkCorrectMessageFormat("SET", event);
 
-        int x = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
+        int x = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
+        int y = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
         int length = Integer.parseInt(String.valueOf(event.charAt(8)));
         char orientation = event.charAt(9);
 
@@ -128,8 +128,8 @@ public class PlayerGridSetter implements Runnable {
         SyntaxChecker syntaxChecker = new SyntaxChecker();
         syntaxChecker.checkCorrectMessageFormat("DELETE", event);
 
-        int x = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
+        int x = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
+        int y = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
 
         syntaxChecker.checkCorrectMessage(x, y);
 
