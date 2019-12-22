@@ -240,10 +240,10 @@ class Player {
                     gameGrid[x + i - 1][y].setAvailable(available);
                     gameGrid[x + i + 1][y].setAvailable(available);
                 }
-                //If the Ship is placed at the first column
+                //If the Ship is placed at the first row
                 if (y == 0) gameGrid[x + i][y + 1].setAvailable(available);
                     //If the Ship is placed at the last column
-                else if (y == 20) gameGrid[x + i][y - 1].setAvailable(available);
+                else if (y == Server.GRID_LENGTH-1) gameGrid[x + i][y - 1].setAvailable(available);
                 else {
                     gameGrid[x + i][y + 1].setAvailable(available);
                     gameGrid[x + i][y - 1].setAvailable(available);
@@ -256,10 +256,10 @@ class Player {
                     gameGrid[x][y + i - 1].setAvailable(available);
                     gameGrid[x][y + i + 1].setAvailable(available);
                 }
-                //If the Ship is placed at the first row
+                //If the Ship is placed at the first column
                 if (x == 0) gameGrid[x + 1][y + i].setAvailable(available);
                     //If the Ship is placed at the last row
-                else if (x == 20) gameGrid[x - 1][y + i].setAvailable(available);
+                else if (x == Server.GRID_LENGTH-1) gameGrid[x - 1][y + i].setAvailable(available);
                 else {
                     gameGrid[x + 1][y + i].setAvailable(available);
                     gameGrid[x - 1][y + i].setAvailable(available);

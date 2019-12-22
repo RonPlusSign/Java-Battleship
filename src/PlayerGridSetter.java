@@ -61,6 +61,19 @@ public class PlayerGridSetter implements Runnable {
                             System.out.println("RESET command received from " + player.getName() + ": " + command);
 
                             player.resetGrid();
+
+                            StringBuilder msg = new StringBuilder();
+                            for (int n : Player.getStartingShipList()) {
+                                msg.append(n);
+                            }
+
+                            player.getOutput().println("{ " +
+                                    " \"cmd\" : \"GRID\"" +
+                                    ", \"msg\" : {" +
+                                    "\"length\" : " + Server.GRID_LENGTH +
+                                    ", \"ships\" : \"" + msg
+                                    + "\"} }");
+
                         }
                         else if (command.startsWith("READY")) {
 
