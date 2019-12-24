@@ -42,7 +42,6 @@ class Game implements Runnable {
             } else {
                 while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {    //wait for clients to set their grid layout
                     Thread.sleep(2000); //time is in milliseconds
-
                 }
 
                 currentPlayer.getOutput().println("{\"cmd\" : \"PLAY\"}");

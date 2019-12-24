@@ -4,34 +4,48 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-/**
- * Main Server function that manages Clients queue and starts the Games
- */
+
 public class Server {
+    //Array containing Players connected to this server
     private static ArrayList<Player> clientsQueue = new ArrayList<>();
+    //Incremental ID representing each client connected
     private static int clientCount = 0;
+    //Grid length (the Grid is square shaped)
     protected static final int GRID_LENGTH = 12;
+    //Number of Game instances that can be managed
     private static final int MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 
+    /**
+     * Main Server function that manages Clients queue and starts the Games
+     */
     public static void main(String[] args) {
+        //Socket opening on port xxxx
         try (ServerSocket listener = new ServerSocket(1337)) {
             System.out.println("Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(MAX_GAMES_NUMBER);
             while (true) {
+                //New socket creation
                 Socket newSocket = listener.accept();
                 if (newSocket.isConnected()) {
                     clientsQueue.add(new Player(newSocket, nextPlayerID()));
                 }
-
-                if (clientsQueue.size() >= 2) {                                 //if there are at least 2 players in queue, start a game (checking their connection before starting)
+                //If there are at least 2 players in queue, start a game (checking their connection before starting)
+                if (clientsQueue.size() >= 2) {
                     try {
-                        if (!testConnection(clientsQueue.get(0))) {            //check if the first player in queue still connected
-                            clientsQueue.remove(0);                     //if the player isn't connected, remove it from the queue
-                        } else if (!testConnection(clientsQueue.get(1))) {     //check if the second player in queue still connected
-                            clientsQueue.remove(1);                     //if the player isn't connected, remove it from the queue
-                        } else {                                               //both players are still connected
+                        //Check if the first player in queue still connected
+                        if (!testConnection(clientsQueue.get(0))) {
+                            //if the player isn't connected, remove it from the queue
+                            clientsQueue.remove(0);
+                        }
+                        //Check if the second player in queue still connected
+                        else if (!testConnection(clientsQueue.get(1))) {
+                            clientsQueue.remove(1);
+                        }
+                        //Both players are still connected --> a new Game instance is created
+                        else {
                             System.out.println("Starting a game");
-                            Game game = new Game(clientsQueue.remove(0), clientsQueue.remove(0));   //ArrayList.remove(index) method returns the Player object in that position
+                            //ArrayList.remove(index) method returns the Player object in that position
+                            Game game = new Game(clientsQueue.remove(0), clientsQueue.remove(0));
                             pool.execute(game);
                         }
                     } catch (Exception e) {
@@ -58,10 +72,12 @@ public class Server {
         try {
             player.getOutput().println("{ \"cmd\" : \"PING\"" +
                     ", \"msg\" : \"Testing the connection of player " + player.getName() + "\"}");
+
             isAlive = true;
         } catch (Exception exception) {
             System.out.println(exception.getMessage());
         }
+
         return isAlive;
     }
 

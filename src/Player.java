@@ -141,25 +141,30 @@ class Player {
     /**
      * Function which sets the ship in the gameGrid
      *
-     * @param x           Axys
-     * @param y           Axys
+     * @param x           Axys (Columns)
+     * @param y           Axys (Rows)
      * @param length      Ship Length
      * @param orientation Ship Orientation
      */
     public void set(int x, int y, int length, char orientation) throws IllegalArgumentException {
-        if (shipList[length - 1] > 0) { // Check if selected ship is available
-
+        // Check if selected ship is available
+        if (shipList[length - 1] > 0) {
+            // Check if involved Tiles are available
             if (getAvailability(x, y, length, orientation)) {
                 gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
                 shipList[length - 1]--;
                 setAvailability(x, y, length, orientation, false);
-            } else {
+            }
+            //At least one Tile's not available
+            else {
                 throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
                         ", \"msg\" : { " +
                         "\"cod\" : \"100\"" +
                         ",\"msg\" : \"Invalid ship position\" } }");
             }
-        } else {
+        }
+        // No more Ships of that size available
+        else {
             throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
                     ", \"msg\" : { " +
                     "\"cod\" : \"101\"" +
@@ -168,19 +173,27 @@ class Player {
         }
     }
 
+    /**
+     * Function which deletes the Ship (if exists) that is in the selected tile
+     * @param x X Axys (Columns)
+     * @param y Y Axys (Rows)
+     * @throws IllegalArgumentException
+     */
     public void delete(int x, int y) throws IllegalArgumentException {
+        //No Ship in the selected tile
         if (gameGrid[x][y] == null) throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
                 ", \"msg\" : { " +
                 "\"cod\" : \"102\"" +
                 ",\"msg\" : \"Selected tile doesn't contain a ship\" }}"
-
         );
         else {
+            //Retrieving specific properties of the Ship
             int xInit = gameGrid[x][y].getShip().getX();
             int yInit = gameGrid[x][y].getShip().getY();
             int length = gameGrid[x][y].getShip().getLength();
             char orientation = gameGrid[x][y].getShip().getOrientation();
 
+            //Deleting Ship from each Tile involved
             for (int i = 0; i < length; i++) {
                 if (orientation == 'H') {
                     gameGrid[xInit + i][yInit].deleteShip();
@@ -189,7 +202,11 @@ class Player {
                 }
             }
 
+            //Reset of the availability of the Tiles
             setAvailability(xInit, yInit, length, orientation, true);
+
+            //Increase of the number of "boat size" available
+            shipList[length-1]++;
         }
     }
 
@@ -281,7 +298,7 @@ class Player {
         return true;
     }
 
-    /* getters & setters */
+    /* ------ Getters and Setters ------- */
 
     public PrintWriter getOutput() {
         return output;
