@@ -9,9 +9,8 @@ import java.util.concurrent.TimeUnit;
 class Game implements Runnable {
     private Player currentPlayer, opponent; //players
     private SyntaxChecker syntaxChecker;
-
-    final ScheduledExecutorService pingExecutor;
-
+    private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
+    private final int PING_DELAY = 3000;
     /**
      * Constructor
      *
@@ -28,7 +27,7 @@ class Game implements Runnable {
         this.syntaxChecker = new SyntaxChecker();
 
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
-        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 0, 3000, TimeUnit.MILLISECONDS);
+        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 0, PING_DELAY, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -72,7 +71,7 @@ class Game implements Runnable {
                             "\"msg\" : false }");
 
                     try {
-                        String command = currentPlayer.getInput().next();
+                        String command = currentPlayer.getInput().nextLine();
                         System.out.println("Command received ---> " + currentPlayer.getName() + ": " + command);
 
                         //during this part of the game, Client can only request for FIRE
@@ -85,7 +84,6 @@ class Game implements Runnable {
 
                             syntaxChecker.checkCorrectMessage(x, y);
 
-                            opponent.fire(x, y);
                             if (!opponent.fire(x, y)) {  //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
@@ -117,7 +115,7 @@ class Game implements Runnable {
     }
 
     /**
-     * Checks periodically that the two players are still in the game
+     * Checks if the players are still in the game
      *
      * @return The status of the connection (TRUE = Ok)
      */

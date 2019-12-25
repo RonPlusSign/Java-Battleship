@@ -11,7 +11,7 @@ public class Server {
     //Incremental ID representing each client connected
     private static int clientCount = 0;
     //Grid length (the Grid is square shaped)
-    protected static final int GRID_LENGTH = 12;
+    protected static final int GRID_LENGTH = 10;
     //Number of Game instances that can be managed
     private static final int MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 

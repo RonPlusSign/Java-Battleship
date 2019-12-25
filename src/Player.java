@@ -107,8 +107,8 @@ class Player {
                     "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
 
             //send HIT to both players
-            output.println(message);
-            opponent.output.println(message);
+            send(message);
+            opponent.send(message);
 
             if (gameGrid[x][y].getShip().isSunk()) {
                 shipsAlive--;
@@ -122,13 +122,13 @@ class Player {
                         " } }";
 
                 //sent SUNK to both players
-                output.println(message);
-                opponent.output.println(message);
+                send(message);
+                opponent.send(message);
 
 
                 if (shipsAlive == 0) {    //if the ships left are 0, the opponent WIN (the function fire() works on the player who's been hit, so Opponent is the player who sent FIRE
-                    opponent.output.println("{\"cmd\" : \"WON\"}");
-                    output.println("{\"cmd\" : \"LOST\"}");
+                    opponent.send("{\"cmd\" : \"WON\"}");
+                    send("{\"cmd\" : \"LOST\"}");
 
                     //Disconnect both Clients when match is finished
                     try {
@@ -147,8 +147,8 @@ class Player {
         } else {
             message = "{\"cmd\" : \"MISS\"," +
                     "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
-            output.println(message);
-            opponent.output.println(message);
+            send(message);
+            opponent.send(message);
             return false;
         }
     }

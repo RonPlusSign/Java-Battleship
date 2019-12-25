@@ -80,14 +80,14 @@ class SyntaxChecker {
                 );
         }
         //SET message
-        else if (!(String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10))
-            throw new IllegalArgumentException(
-                    "{ \"cmd\" : \"ERROR\"" +
-                            ", \"msg\" : { " +
-                            "\"cod\" : \"900\"" +
-                            ",\"msg\" : \"Invalid message format\" }}"
-            );
+        else if (nameMessage.equals("SET")) {
+            if (!(String.valueOf(message.charAt(3)).equals(" ") && message.length() == 10))
+                throw new IllegalArgumentException(
+                        "{ \"cmd\" : \"ERROR\"" +
+                                ", \"msg\" : { " +
+                                "\"cod\" : \"900\"" +
+                                ",\"msg\" : \"Invalid message format\" }}"
+                );
+        }
     }
-
-
 }
