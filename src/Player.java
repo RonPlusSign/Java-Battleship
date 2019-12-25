@@ -58,6 +58,21 @@ class Player {
     }
 
     /**
+     * Function used to write on the player's output stream
+     * It must be synchronized because multiple threads have to write on the socket one at the time
+     * @param message
+     */
+    public synchronized void send(String message){
+        //check if message is null
+        if(message != null){
+            //write the message
+            output.println(message);
+            //flush the stream, in that way the message is sent and the output is ready for new messages
+            output.flush();
+        }
+    }
+
+    /**
      * Function that resets the ships grid and the available ships
      */
     public void resetGrid(){

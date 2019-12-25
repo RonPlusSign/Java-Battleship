@@ -44,8 +44,8 @@ class Game implements Runnable {
                     Thread.sleep(2000); //time is in milliseconds
                 }
 
-                currentPlayer.getOutput().println("{\"cmd\" : \"PLAY\"}");
-                opponent.getOutput().println("{\"cmd\" : \"PLAY\"}");
+                currentPlayer.send("{\"cmd\" : \"PLAY\"}");
+                opponent.send("{\"cmd\" : \"PLAY\"}");
                 manageGame();   //main function
             }
         } catch (Exception e) {
@@ -65,10 +65,10 @@ class Game implements Runnable {
                 //Loops until the move is valid
                 while (true) {
                     // Is your turn: TURN true
-                    currentPlayer.getOutput().println("{\"cmd\" : \"TURN\", " +
+                    currentPlayer.send("{\"cmd\" : \"TURN\", " +
                             "\"msg\" : true }");
                     // Is not your turn: TURN false
-                    opponent.getOutput().println("{\"cmd\" : \"TURN\", " +
+                    opponent.send("{\"cmd\" : \"TURN\", " +
                             "\"msg\" : false }");
 
                     try {
@@ -101,7 +101,7 @@ class Game implements Runnable {
                         }
 
                     } catch (Exception e) {
-                        currentPlayer.getOutput().println(e.getMessage());
+                        currentPlayer.send(e.getMessage());
                     }
                 }
 
@@ -125,7 +125,7 @@ class Game implements Runnable {
         if (!Server.testConnection(currentPlayer)) {
             System.out.println("[Connection ERROR] Player " + currentPlayer.getName() + " disconnected.");
 
-            opponent.getOutput().println("{\"cmd\" : \"WON\"," +
+            opponent.send("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
 
             try {
@@ -140,7 +140,7 @@ class Game implements Runnable {
         } else if (!Server.testConnection(opponent)) {
             System.out.println("[Connection ERROR] Player " + opponent.getName() + " disconnected.");
 
-            currentPlayer.getOutput().println("{\"cmd\" : \"WON\"," +
+            currentPlayer.send("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
 
             try {

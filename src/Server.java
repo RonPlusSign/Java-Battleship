@@ -70,8 +70,9 @@ public class Server {
         boolean isAlive = false;
 
         try {
-            player.getOutput().println("{ \"cmd\" : \"PING\"" +
+            player.send("{ \"cmd\" : \"PING\"" +
                     ", \"msg\" : \"Testing the connection of player " + player.getName() + "\"}");
+            player.getOutput().flush();
 
             isAlive = true;
         } catch (Exception exception) {

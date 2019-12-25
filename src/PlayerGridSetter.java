@@ -39,7 +39,7 @@ public class PlayerGridSetter implements Runnable {
                                 msg.append(n);
                             }
 
-                            player.getOutput().println("{ " +
+                            player.send("{ " +
                                     " \"cmd\" : \"GRID\"" +
                                     ", \"msg\" : {" +
                                     "\"length\" : " + Server.GRID_LENGTH +
@@ -67,7 +67,7 @@ public class PlayerGridSetter implements Runnable {
                                 msg.append(n);
                             }
 
-                            player.getOutput().println("{ " +
+                            player.send("{ " +
                                     " \"cmd\" : \"GRID\"" +
                                     ", \"msg\" : {" +
                                     "\"length\" : " + Server.GRID_LENGTH +
@@ -80,15 +80,15 @@ public class PlayerGridSetter implements Runnable {
                             System.out.println("READY command received from " + player.getName() + ": " + command);
 
                             if (!player.isGridReady())  //if the player hasn't finished to position its ships
-                                player.getOutput().println("{ \"cmd\" : \"ERROR\"" +
+                                player.send("{ \"cmd\" : \"ERROR\"" +
                                         ", \"msg\" : { " +
                                         "\"cod\" : \"103\"" +
                                         ",\"msg\" : \"You still have ships left to position\" } }");
                             else if (player.getOpponent() == null) {    //if the player doesn't have an opponent yet
-                                player.getOutput().println("{\"cmd\" : \"WAIT\"}");
+                                player.send("{\"cmd\" : \"WAIT\"}");
                                 break;
                             } else if (!player.getOpponent().isGridReady()) {   //if the opponent's grid isn't ready
-                                player.getOutput().println("{\"cmd\" : \"WAIT\"}");
+                                player.send("{\"cmd\" : \"WAIT\"}");
                                 break;
                             } else  //if both players are ready, exit from the grid setting (Game is going to warn Clients to start the game (PLAY command))
                                 break;
@@ -97,7 +97,7 @@ public class PlayerGridSetter implements Runnable {
                 }
             } catch (Exception e) {
                 System.out.println("Exception thrown: " + e.getMessage());
-                player.getOutput().println(e.getMessage());
+                player.send(e.getMessage());
             }
         }
         System.out.println("Grid positioning of " + player.getName() + " finished");
@@ -122,12 +122,12 @@ public class PlayerGridSetter implements Runnable {
         try {
             //if an exception is thrown by player.set(), it means that its parameters are invalid
             player.set(x, y, length, orientation);
-            player.getOutput().println("{\"cmd\" : \"OK\"," +
+            player.send("{\"cmd\" : \"OK\"," +
                     "\"msg\": \"Added new ship of length " + length + "\" }");
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("ERROR")) {
                 System.out.println("SET Error: " + e.getMessage());
-                player.getOutput().println(e.getMessage());
+                player.send(e.getMessage());
             } else e.printStackTrace();
         }
     }
@@ -149,12 +149,12 @@ public class PlayerGridSetter implements Runnable {
         try {
             //if an exception is thrown by player.delete(), it means that its parameters are invalid
             player.delete(x, y);
-            player.getOutput().println("{\"cmd\" : \"OK\"" +
+            player.send("{\"cmd\" : \"OK\"" +
                     ", \"msg\": \"Removed the ship\" }");
         } catch (IllegalArgumentException e) {
             if (e.getMessage().contains("ERROR")) {
                 System.out.println("DELETE Error: " + e.getMessage());
-                player.getOutput().println(e.getMessage());
+                player.send(e.getMessage());
             } else e.printStackTrace();
         }
     }
