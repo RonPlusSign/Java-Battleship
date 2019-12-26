@@ -62,7 +62,7 @@ public class Server {
      * @param player is the Player whose connection has to be tested
      * @return true if client is still connected, false otherwise
      */
-    public static boolean testConnection(Player player) {
+    public synchronized static boolean testConnection(Player player) {
         //to test client connection, we just send a PING command to it.
         //if it answers correctly, client is still connected
         //if there's an Exception thrown, client is disconnected

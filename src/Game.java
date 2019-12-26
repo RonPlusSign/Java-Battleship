@@ -10,7 +10,7 @@ class Game implements Runnable {
     private Player currentPlayer, opponent; //players
     private SyntaxChecker syntaxChecker;
     private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
-    private final int PING_DELAY = 3000;
+    private final int PING_DELAY = 10000;
     /**
      * Constructor
      *
@@ -27,7 +27,7 @@ class Game implements Runnable {
         this.syntaxChecker = new SyntaxChecker();
 
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
-        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 0, PING_DELAY, TimeUnit.MILLISECONDS);
+        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 1000, PING_DELAY, TimeUnit.MILLISECONDS);
     }
 
     /**
