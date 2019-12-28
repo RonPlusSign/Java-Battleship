@@ -11,6 +11,7 @@ class Game implements Runnable {
     private SyntaxChecker syntaxChecker;
     private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
     private final int PING_DELAY = 10000;
+
     /**
      * Constructor
      *
@@ -27,7 +28,7 @@ class Game implements Runnable {
         this.syntaxChecker = new SyntaxChecker();
 
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
-        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 1000, PING_DELAY, TimeUnit.MILLISECONDS);
+        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 5000, PING_DELAY, TimeUnit.MILLISECONDS);
     }
 
     /**
@@ -36,17 +37,15 @@ class Game implements Runnable {
     @Override
     public void run() {
         try {
-            if (!clientsConnected()) {
-                System.out.println("ERROR 902 Connection error");
-            } else {
-                while (!(currentPlayer.isGridReady() && opponent.isGridReady())) {    //wait for clients to set their grid layout
-                    Thread.sleep(2000); //time is in milliseconds
-                }
 
-                currentPlayer.send("{\"cmd\" : \"PLAY\"}");
-                opponent.send("{\"cmd\" : \"PLAY\"}");
-                manageGame();   //main function
+            while (!(currentPlayer.isReadyToPlay() && opponent.isReadyToPlay())) {    //wait for clients to set their grid layout
+                Thread.sleep(2000); //time is in milliseconds
             }
+
+            currentPlayer.send("{\"cmd\" : \"PLAY\"}");
+            opponent.send("{\"cmd\" : \"PLAY\"}");
+            manageGame();   //main function
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -71,8 +70,7 @@ class Game implements Runnable {
                             "\"msg\" : false }");
 
                     try {
-                        String command = currentPlayer.getInput().nextLine();
-                        System.out.println("Command received ---> " + currentPlayer.getName() + ": " + command);
+                        String command = currentPlayer.receive();
 
                         //during this part of the game, Client can only request for FIRE
                         if (command.startsWith("FIRE")) {
@@ -151,7 +149,7 @@ class Game implements Runnable {
             return false;
         }
 
-        System.out.println("[Connection OK] Both players are still in the game");
+        //System.out.println("[Connection OK] Both players are still in the game");
         return true;
     }
 }

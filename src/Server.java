@@ -43,7 +43,7 @@ public class Server {
                         }
                         //Both players are still connected --> a new Game instance is created
                         else {
-                            System.out.println("Starting a game");
+                            System.out.println("Starting a new game...");
                             //ArrayList.remove(index) method returns the Player object in that position
                             Game game = new Game(clientsQueue.remove(0), clientsQueue.remove(0));
                             pool.execute(game);
@@ -64,7 +64,7 @@ public class Server {
      */
     public synchronized static boolean testConnection(Player player) {
         //to test client connection, we just send a PING command to it.
-        //if it answers correctly, client is still connected
+        //if the message is sent correctly, client is still connected
         //if there's an Exception thrown, client is disconnected
         //else, there's a connection problem
         boolean isAlive = false;

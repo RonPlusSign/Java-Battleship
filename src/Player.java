@@ -15,6 +15,7 @@ class Player {
     private Scanner input;
     private PrintWriter output;
     private Tile[][] gameGrid;
+    private boolean readyToPlay;
 
     /**
      * Contains the number of ships available for each length
@@ -44,6 +45,7 @@ class Player {
         gameGrid = new Tile[Server.GRID_LENGTH][Server.GRID_LENGTH];
 
         resetGrid();
+        readyToPlay = false;
 
         System.out.println("New Client connected: " + this.name);
 
@@ -60,16 +62,31 @@ class Player {
     /**
      * Function used to write on the player's output stream
      * It must be synchronized because multiple threads have to write on the socket one at the time
-     * @param message
+     * @param message message to be sent
      */
     public synchronized void send(String message){
+        System.out.println("SENDING: " + message);
+
         //check if message is null
         if(message != null){
             //write the message
-            output.println(message);
+            output.printf(message + "\n");
+
             //flush the stream, in that way the message is sent and the output is ready for new messages
             output.flush();
         }
+    }
+
+    /**
+     * Function used to read from the player's input stream
+     * @return the String in input
+     */
+    public String receive(){
+        String message =  input.nextLine();
+
+        System.out.println("RECEIVED (" + name + "): "+ message);
+
+        return message;
     }
 
     /**
@@ -192,7 +209,7 @@ class Player {
      * Function which deletes the Ship (if exists) that is in the selected tile
      * @param x X Axys (Columns)
      * @param y Y Axys (Rows)
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException if the tile doesn't contain a ship
      */
     public void delete(int x, int y) throws IllegalArgumentException {
         //No Ship in the selected tile
@@ -350,4 +367,14 @@ class Player {
     public int getShipsAlive() {
         return shipsAlive;
     }
+
+    public boolean isReadyToPlay() {
+        return readyToPlay;
+    }
+
+    public void isReadyToPlay(boolean readyToPlay) {
+        this.readyToPlay = readyToPlay;
+    }
+
+
 }

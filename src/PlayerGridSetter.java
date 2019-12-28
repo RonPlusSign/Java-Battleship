@@ -23,76 +23,60 @@ public class PlayerGridSetter implements Runnable {
 
         while (true) {
             try {
-                if (player.getInput().hasNextLine()) {
-                    command = player.getInput().nextLine();
+                command = player.receive();
 
-                    if (command != null) {
+                if (command.startsWith("GRID")) {
+                    StringBuilder msg = new StringBuilder();
+                    for (int n : Player.getStartingShipList()) {
+                        msg.append(n);
+                    }
 
-                        System.out.println("COMMAND FROM CLIENT: " + command);
+                    player.send("{ " +
+                            " \"cmd\" : \"GRID\"" +
+                            ", \"msg\" : {" +
+                            "\"length\" : " + Server.GRID_LENGTH +
+                            ", \"ships\" : \"" + msg
+                            + "\"} }");
 
-                        if (command.startsWith("GRID")) {
+                } else if (command.startsWith("SET")) {
+                    set(command);
 
-                            System.out.println("GRID command received from " + player.getName() + ": " + command);
+                } else if (command.startsWith("DELETE")) {
+                    delete(command);
 
-                            StringBuilder msg = new StringBuilder();
-                            for (int n : Player.getStartingShipList()) {
-                                msg.append(n);
-                            }
+                } else if (command.startsWith("RESET")) {
+                    player.resetGrid();
 
-                            player.send("{ " +
-                                    " \"cmd\" : \"GRID\"" +
-                                    ", \"msg\" : {" +
-                                    "\"length\" : " + Server.GRID_LENGTH +
-                                    ", \"ships\" : \"" + msg
-                                    + "\"} }");
+                    //send GRID as response
+                    StringBuilder msg = new StringBuilder();
+                    for (int n : Player.getStartingShipList()) {
+                        msg.append(n);
+                    }
 
-                        } else if (command.startsWith("SET")) {
+                    player.send("{ " +
+                            " \"cmd\" : \"GRID\"" +
+                            ", \"msg\" : {" +
+                            "\"length\" : " + Server.GRID_LENGTH +
+                            ", \"ships\" : \"" + msg
+                            + "\"} }");
 
-                            System.out.println("SET command received from " + player.getName() + ": " + command);
+                } else if (command.startsWith("READY")) {
+                    if (!player.isGridReady())  //if the player hasn't finished to position its ships
+                        player.send("{ \"cmd\" : \"ERROR\"" +
+                                ", \"msg\" : { " +
+                                "\"cod\" : \"103\"" +
+                                ",\"msg\" : \"You still have ships left to position\" } }");
+                    else {
+                        player.isReadyToPlay(true);  //set that the player is ready
 
-                            set(command);
-                        } else if (command.startsWith("DELETE")) {
-
-                            System.out.println("DELETE command received from " + player.getName() + ": " + command);
-
-                            delete(command);
-                        } else if(command.startsWith("RESET")){
-
-                            System.out.println("RESET command received from " + player.getName() + ": " + command);
-
-                            player.resetGrid();
-
-                            StringBuilder msg = new StringBuilder();
-                            for (int n : Player.getStartingShipList()) {
-                                msg.append(n);
-                            }
-
-                            player.send("{ " +
-                                    " \"cmd\" : \"GRID\"" +
-                                    ", \"msg\" : {" +
-                                    "\"length\" : " + Server.GRID_LENGTH +
-                                    ", \"ships\" : \"" + msg
-                                    + "\"} }");
-
-                        }
-                        else if (command.startsWith("READY")) {
-
-                            System.out.println("READY command received from " + player.getName() + ": " + command);
-
-                            if (!player.isGridReady())  //if the player hasn't finished to position its ships
-                                player.send("{ \"cmd\" : \"ERROR\"" +
-                                        ", \"msg\" : { " +
-                                        "\"cod\" : \"103\"" +
-                                        ",\"msg\" : \"You still have ships left to position\" } }");
-                            else if (player.getOpponent() == null) {    //if the player doesn't have an opponent yet
-                                player.send("{\"cmd\" : \"WAIT\"}");
-                                break;
-                            } else if (!player.getOpponent().isGridReady()) {   //if the opponent's grid isn't ready
-                                player.send("{\"cmd\" : \"WAIT\"}");
-                                break;
-                            } else  //if both players are ready, exit from the grid setting (Game is going to warn Clients to start the game (PLAY command))
-                                break;
-                        }
+                        if (player.getOpponent() == null) {    //if the player doesn't have an opponent yet
+                            player.send("{\"cmd\" : \"WAIT\"}");
+                            break;
+                        } else if (!player.getOpponent().isReadyToPlay()) {   //if the opponent's grid isn't ready
+                            player.send("{\"cmd\" : \"WAIT\"}");
+                            break;
+                        } else  //if both players are ready, exit from the grid setting (Game is going to warn Clients to start the game (PLAY command))
+                            break;
                     }
                 }
             } catch (Exception e) {
