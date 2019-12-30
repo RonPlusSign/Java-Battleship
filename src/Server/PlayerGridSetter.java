@@ -1,3 +1,5 @@
+package Server;
+
 public class PlayerGridSetter implements Runnable {
     Player player;
 
@@ -24,10 +26,15 @@ public class PlayerGridSetter implements Runnable {
         while (true) {
             try {
                 command = player.receive();
+            } catch (Exception e) {
+                System.out.println("Exception thrown: " + e.getMessage());
+                break;
+            }
 
+            try {
                 if (command.startsWith("GRID")) {
                     StringBuilder msg = new StringBuilder();
-                    for (int n : Player.getStartingShipList()) {
+                    for (int n : player.getShipList()) {
                         msg.append(n);
                     }
 
@@ -49,7 +56,7 @@ public class PlayerGridSetter implements Runnable {
 
                     //send GRID as response
                     StringBuilder msg = new StringBuilder();
-                    for (int n : Player.getStartingShipList()) {
+                    for (int n : player.getShipList()) {
                         msg.append(n);
                     }
 
@@ -82,6 +89,7 @@ public class PlayerGridSetter implements Runnable {
             } catch (Exception e) {
                 System.out.println("Exception thrown: " + e.getMessage());
                 player.send(e.getMessage());
+                break;
             }
         }
         System.out.println("Grid positioning of " + player.getName() + " finished");
@@ -96,16 +104,16 @@ public class PlayerGridSetter implements Runnable {
         SyntaxChecker syntaxChecker = new SyntaxChecker();
         syntaxChecker.checkCorrectMessageFormat("SET", event);
 
-        int x = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
+        int row = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
+        int col = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
         int length = Integer.parseInt(String.valueOf(event.charAt(8)));
         char orientation = event.charAt(9);
 
-        syntaxChecker.checkCorrectMessage(x, y, length, orientation);
+        syntaxChecker.checkCorrectMessage(col, row, length, orientation);
 
         try {
             //if an exception is thrown by player.set(), it means that its parameters are invalid
-            player.set(x, y, length, orientation);
+            player.set(col, row, length, orientation);
             player.send("{\"cmd\" : \"OK\"," +
                     "\"msg\": \"Added new ship of length " + length + "\" }");
         } catch (IllegalArgumentException e) {
@@ -125,14 +133,14 @@ public class PlayerGridSetter implements Runnable {
         SyntaxChecker syntaxChecker = new SyntaxChecker();
         syntaxChecker.checkCorrectMessageFormat("DELETE", event);
 
-        int x = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
-        int y = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
+        int row = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
+        int col = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
 
-        syntaxChecker.checkCorrectMessage(x, y);
+        syntaxChecker.checkCorrectMessage(col, row);
 
         try {
             //if an exception is thrown by player.delete(), it means that its parameters are invalid
-            player.delete(x, y);
+            player.delete(col, row);
             player.send("{\"cmd\" : \"OK\"" +
                     ", \"msg\": \"Removed the ship\" }");
         } catch (IllegalArgumentException e) {

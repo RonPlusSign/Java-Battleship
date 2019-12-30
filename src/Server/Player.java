@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -62,13 +64,14 @@ class Player {
     /**
      * Function used to write on the player's output stream
      * It must be synchronized because multiple threads have to write on the socket one at the time
+     *
      * @param message message to be sent
      */
-    public synchronized void send(String message){
+    public synchronized void send(String message) {
         System.out.println("SENDING: " + message);
 
         //check if message is null
-        if(message != null){
+        if (message != null) {
             //write the message
             output.printf(message + "\n");
 
@@ -79,12 +82,13 @@ class Player {
 
     /**
      * Function used to read from the player's input stream
+     *
      * @return the String in input
      */
-    public String receive(){
-        String message =  input.nextLine();
+    public String receive() {
+        String message = input.nextLine();
 
-        System.out.println("RECEIVED (" + name + "): "+ message);
+        System.out.println("RECEIVED (" + name + "): " + message);
 
         return message;
     }
@@ -92,7 +96,7 @@ class Player {
     /**
      * Function that resets the ships grid and the available ships
      */
-    public void resetGrid(){
+    public void resetGrid() {
         // Initialize tiles
         for (int i = 0; i < Server.GRID_LENGTH; i++) {
             for (int j = 0; j < Server.GRID_LENGTH; j++) {
@@ -112,30 +116,30 @@ class Player {
     /**
      * Function which fires the own tile
      *
-     * @param x X Axys
-     * @param y Y Axys
+     * @param col column
+     * @param row row
      * @return true if the player hit a ship, false otherwise
      */
-    public boolean fire(int x, int y) {
+    public boolean fire(int col, int row) {
         String message;
 
-        if (gameGrid[x][y].hit()) {
+        if (gameGrid[row][col].hit()) {
             message = "{\"cmd\" : \"HIT\"," +
-                    "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
+                    "\"msg\" : {\"row\" : " + row + ", \"col\" : " + col + " } }";
 
             //send HIT to both players
             send(message);
             opponent.send(message);
 
-            if (gameGrid[x][y].getShip().isSunk()) {
+            if (gameGrid[row][col].getShip().isSunk()) {
                 shipsAlive--;
 
                 message = "{\"cmd\" : \"SUNK\"," +
                         "\"msg\" : {" +
-                        "\"row\" : " + gameGrid[x][y].getShip().getX() +
-                        ", \"col\" : " + gameGrid[x][y].getShip().getY() +
-                        ", \"length\" : " + gameGrid[x][y].getShip().getLength() +
-                        ", \"orientation\" :  " + gameGrid[x][y].getShip().getOrientation() +
+                        "\"row\" : " + gameGrid[row][col].getShip().getX() +
+                        ", \"col\" : " + gameGrid[row][col].getShip().getY() +
+                        ", \"length\" : " + gameGrid[row][col].getShip().getLength() +
+                        ", \"orientation\" :  '" + gameGrid[row][col].getShip().getOrientation() + "'" +
                         " } }";
 
                 //sent SUNK to both players
@@ -163,7 +167,7 @@ class Player {
             return true;
         } else {
             message = "{\"cmd\" : \"MISS\"," +
-                    "\"msg\" : {\"row\" : " + x + ", \"col\" : " + y + " } }";
+                    "\"msg\" : {\"row\" : " + row + ", \"col\" : " + col + " } }";
             send(message);
             opponent.send(message);
             return false;
@@ -173,19 +177,19 @@ class Player {
     /**
      * Function which sets the ship in the gameGrid
      *
-     * @param x           Axys (Columns)
-     * @param y           Axys (Rows)
+     * @param col         Columns
+     * @param row         Row
      * @param length      Ship Length
      * @param orientation Ship Orientation
      */
-    public void set(int x, int y, int length, char orientation) throws IllegalArgumentException {
+    public void set(int col, int row, int length, char orientation) throws IllegalArgumentException {
         // Check if selected ship is available
         if (shipList[length - 1] > 0) {
             // Check if involved Tiles are available
-            if (getAvailability(x, y, length, orientation)) {
-                gameGrid[x][y].insertShip(new Ship(length, orientation, x, y));
+            if (getAvailability(col, row, length, orientation)) {
+                gameGrid[row][col].insertShip(new Ship(length, orientation, col, row));
                 shipList[length - 1]--;
-                setAvailability(x, y, length, orientation, false);
+                setAvailability(col, row, length, orientation, false);
             }
             //At least one Tile's not available
             else {
@@ -207,23 +211,24 @@ class Player {
 
     /**
      * Function which deletes the Ship (if exists) that is in the selected tile
-     * @param x X Axys (Columns)
-     * @param y Y Axys (Rows)
+     *
+     * @param col Column
+     * @param row Row
      * @throws IllegalArgumentException if the tile doesn't contain a ship
      */
-    public void delete(int x, int y) throws IllegalArgumentException {
+    public void delete(int col, int row) throws IllegalArgumentException {
         //No Ship in the selected tile
-        if (gameGrid[x][y] == null) throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
+        if (gameGrid[col][row] == null) throw new IllegalArgumentException("{ \"cmd\" : \"ERROR\"" +
                 ", \"msg\" : { " +
                 "\"cod\" : \"102\"" +
                 ",\"msg\" : \"Selected tile doesn't contain a ship\" }}"
         );
         else {
             //Retrieving specific properties of the Ship
-            int xInit = gameGrid[x][y].getShip().getX();
-            int yInit = gameGrid[x][y].getShip().getY();
-            int length = gameGrid[x][y].getShip().getLength();
-            char orientation = gameGrid[x][y].getShip().getOrientation();
+            int xInit = gameGrid[row][col].getShip().getX();
+            int yInit = gameGrid[row][col].getShip().getY();
+            int length = gameGrid[row][col].getShip().getLength();
+            char orientation = gameGrid[row][col].getShip().getOrientation();
 
             //Deleting Ship from each Tile involved
             for (int i = 0; i < length; i++) {
@@ -238,7 +243,7 @@ class Player {
             setAvailability(xInit, yInit, length, orientation, true);
 
             //Increase of the number of "boat size" available
-            shipList[length-1]++;
+            shipList[length - 1]++;
         }
     }
 
@@ -246,24 +251,25 @@ class Player {
     /**
      * Function which checks the availability of the Tiles selected to insert the Ship into them
      *
-     * @param x           Axys
-     * @param y           Axys
+     * @param col         Column
+     * @param row         Row
      * @param length      Ship Length
      * @param orientation Ship Orientation
      * @return the availability of the Tiles
      */
-    private boolean getAvailability(int x, int y, int length, char orientation) {
+    private boolean getAvailability(int col, int row, int length, char orientation) {
         //Check if the ship "overflows" from the grid
         //If the ship is Horizontally placed and its length goes outside the grid
-        if (orientation == 'H' && (x + length - 1) >= gameGrid[0].length) return false;
+        if (orientation == 'H' && (col + length - 1) >= Server.GRID_LENGTH) return false;
+
         //If the ship is Vertically placed and its length goes outside the grid
-        if (orientation == 'V' && (y + length - 1) >= gameGrid.length) return false;
+        if (orientation == 'V' && (row + length - 1) >= Server.GRID_LENGTH) return false;
 
         for (int i = 0; i < length; i++) {
             if (orientation == 'H') {
-                if (!gameGrid[i + x][y].isAvailable()) return false;
+                if (!gameGrid[row][i + col].isAvailable()) return false;
             } else {
-                if (!gameGrid[x][i + y].isAvailable()) return false;
+                if (!gameGrid[i + row][col].isAvailable()) return false;
             }
         }
         return true;
@@ -272,46 +278,46 @@ class Player {
     /**
      * Function which sets the availability (or unavailability) of the tiles near to the ships, including the tiles where the Ship is placed
      *
-     * @param x           X Axys
-     * @param y           Y Axys
+     * @param col         Column
+     * @param row         Row
      * @param length      Ship Length
      * @param orientation Ship Orientation
      * @param available   true --> AVAILABLE false --> UNAVAILABLE
      */
-    private void setAvailability(int x, int y, int length, char orientation, boolean available) {
+    private void setAvailability(int col, int row, int length, char orientation, boolean available) {
 
         //Loops that marks the tiles near the ship as available (or not available, depending if the received parameter is true or false)
         for (int i = 0; i < length; i++) {
             //If the orientation is Horizontal
             if (orientation == 'H') {
                 //If the Ship isn't placed at the first or at the last column
-                if (((x + i) != 0) && ((x + i) != Server.GRID_LENGTH - 1)) {
-                    gameGrid[x + i - 1][y].setAvailable(available);
-                    gameGrid[x + i + 1][y].setAvailable(available);
+                if (((col + i) != 0) && ((col + i) != Server.GRID_LENGTH - 1)) {
+                    gameGrid[row][col + i - 1].setAvailable(available);
+                    gameGrid[row][col + i + 1].setAvailable(available);
                 }
                 //If the Ship is placed at the first row
-                if (y == 0) gameGrid[x + i][y + 1].setAvailable(available);
+                if (row == 0) gameGrid[row + 1][col + i].setAvailable(available);
                     //If the Ship is placed at the last column
-                else if (y == Server.GRID_LENGTH-1) gameGrid[x + i][y - 1].setAvailable(available);
+                else if (row == Server.GRID_LENGTH - 1) gameGrid[row - 1][col + i].setAvailable(available);
                 else {
-                    gameGrid[x + i][y + 1].setAvailable(available);
-                    gameGrid[x + i][y - 1].setAvailable(available);
+                    gameGrid[row + 1][col + i].setAvailable(available);
+                    gameGrid[row - 1][col + i].setAvailable(available);
                 }
             }
             //If the orientation is Vertical
             else {
                 //If the Ship isn't placed at the first or at the last row
-                if (((y + i) != 0) && ((y + i) != Server.GRID_LENGTH - 1)) {
-                    gameGrid[x][y + i - 1].setAvailable(available);
-                    gameGrid[x][y + i + 1].setAvailable(available);
+                if (((row + i) != 0) && ((row + i) != Server.GRID_LENGTH - 1)) {
+                    gameGrid[row + i - 1][col].setAvailable(available);
+                    gameGrid[row + i + 1][col].setAvailable(available);
                 }
                 //If the Ship is placed at the first column
-                if (x == 0) gameGrid[x + 1][y + i].setAvailable(available);
+                if (col == 0) gameGrid[row + i][col + 1].setAvailable(available);
                     //If the Ship is placed at the last row
-                else if (x == Server.GRID_LENGTH-1) gameGrid[x - 1][y + i].setAvailable(available);
+                else if (col == Server.GRID_LENGTH - 1) gameGrid[row + i][col - 1].setAvailable(available);
                 else {
-                    gameGrid[x + 1][y + i].setAvailable(available);
-                    gameGrid[x - 1][y + i].setAvailable(available);
+                    gameGrid[row + i][col + 1].setAvailable(available);
+                    gameGrid[row + i][col - 1].setAvailable(available);
                 }
             }
         }

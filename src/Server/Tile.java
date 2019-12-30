@@ -1,3 +1,5 @@
+package Server;
+
 /**
  * Tile
  * Each Tile composes the Game Grid. It contains the Ship

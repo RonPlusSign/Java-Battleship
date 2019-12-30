@@ -1,3 +1,5 @@
+package Server;
+
 import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -77,12 +79,12 @@ class Game implements Runnable {
                             //If the message has the correct Format
                             syntaxChecker.checkCorrectMessageFormat("FIRE", command);
 
-                            int x = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
-                            int y = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
+                            int row = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
+                            int col = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
 
-                            syntaxChecker.checkCorrectMessage(x, y);
+                            syntaxChecker.checkCorrectMessage(col, row);
 
-                            if (!opponent.fire(x, y)) {  //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
+                            if (!opponent.fire(col, row)) {  //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
                             }

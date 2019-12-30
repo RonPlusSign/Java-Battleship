@@ -1,7 +1,8 @@
-# Java Battleship Server
+# Java Battleship
 
-### This is just the server of the application, for the client go to:
+### This mainly is the server of the application, for the client's GUI go to:
 #### https://github.com/regi18/vue-battleship-gui
+###### This project contains a basic client (Client.java) that works using CLI
 
 ---
 
@@ -91,12 +92,12 @@ the documentation is structured like:
 #### Entry point (player are setting ships)
 
 * `WAIT` wait for opponent (to finish positioning ships)
-* `GRID` response for the a `GRID` or `RESET` requests
+* `GRID` response for the a `GRID` or `RESET` requests.
   * `{ length: l, ships: [...] }`
     * `length`: size of the grid
-    * `ships`: is the ships array (of integers)
+    * `ships`: is the ships array (of integers) of the ships left to position.
 
-#### Game (both players are in the game)
+#### Server.Game (both players are in the game)
 
 * `PLAY` game can begin  (needs to be sent to all players)
 * `HIT` selected coordinates had a ship

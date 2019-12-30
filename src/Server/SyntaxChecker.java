@@ -1,3 +1,5 @@
+package Server;
+
 /**
  * Class used to check if the syntax/content of the messages is valid
  */
@@ -11,12 +13,12 @@ class SyntaxChecker {
     /**
      * Function which checks the validity of the FIRE and DELETE message
      *
-     * @param x X Axys
-     * @param y Y Axys
+     * @param col column
+     * @param row row
      * @throws IllegalArgumentException Invalid Coordinates
      */
-    public void checkCorrectMessage(int x, int y) throws IllegalArgumentException {
-        if (!(x >= 0 && x < maxGrid && y >= 0 && y < maxGrid))
+    public void checkCorrectMessage(int col, int row) throws IllegalArgumentException {
+        if (!(col >= 0 && col < maxGrid && row >= 0 && row < maxGrid))
             throw new IllegalArgumentException(
                     "{ \"cmd\" : \"ERROR\"" +
                             ", \"msg\" : { " +
@@ -28,14 +30,14 @@ class SyntaxChecker {
     /**
      * Function which checks the validity of the SET message
      *
-     * @param x           X Axys
-     * @param y           Y Axys
+     * @param col         column
+     * @param row         row
      * @param length      Ship Length
      * @param orientation Ship Orientation
      * @throws IllegalArgumentException Invalid Length or Invalid Orientation
      */
-    public void checkCorrectMessage(int x, int y, int length, char orientation) throws IllegalArgumentException {
-        checkCorrectMessage(x, y);
+    public void checkCorrectMessage(int col, int row, int length, char orientation) throws IllegalArgumentException {
+        checkCorrectMessage(col, row);
         if (length < 1 || length > 5) throw new IllegalArgumentException(   //ships can have a length of 1, 2, 3, 4 or 5
                 "{ \"cmd\" : \"ERROR\"" +
                         ", \"msg\" : { " +

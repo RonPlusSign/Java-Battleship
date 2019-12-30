@@ -1,3 +1,5 @@
+package Server;
+
 /**
  * Ship
  * Each ship will be put into the Game Grid
