@@ -1,4 +1,4 @@
-package Server;
+package server;
 
 /**
  * Class used to check if the syntax/content of the messages is valid

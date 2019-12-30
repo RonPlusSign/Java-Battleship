@@ -2,17 +2,23 @@
 
 ### This mainly is the server of the application, for the client's GUI go to:
 #### https://github.com/regi18/vue-battleship-gui
-###### This project contains a basic client (Client.java) that works using CLI
+###### This project contains a very basic CLI client (Client.java)
 
 ---
 
 ## How to run Server.java
-###(THIS PART HAS TO BE TESTED)
-Enter the Server folder, then run the following command to compile the java files:
+Inside the 'server' folder, run the following command:
  ```shell script
-javac Server.java
+> javac *java
+```
+Then:
+ ```shell script
+> cd ..
+> java server.Server
 ```
 
+
+(to test)
 Create your jar file using the following command:
  ```shell script
 jar -cvfe server.jar *
@@ -35,8 +41,11 @@ Possible args are:
 *  `[portNumber]` (from 1 to 65535)
 *  `[server address] [portNumber]`
 ---
+<br>
 
-## Basic principles
+# Communication specifications
+
+## Format
 
 The protocol is based on a simple request-response form. The message format is as follows:
 
