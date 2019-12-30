@@ -44,7 +44,7 @@ class Player {
     public Player(Socket socket, String name) {
         this.socket = socket;
         this.name = name;
-        gameGrid = new Tile[Server.GRID_LENGTH][Server.GRID_LENGTH];
+        gameGrid = new Tile[Server.getGridLength()][Server.getGridLength()];
 
         resetGrid();
         readyToPlay = false;
@@ -98,8 +98,8 @@ class Player {
      */
     public void resetGrid() {
         // Initialize tiles
-        for (int i = 0; i < Server.GRID_LENGTH; i++) {
-            for (int j = 0; j < Server.GRID_LENGTH; j++) {
+        for (int i = 0; i < Server.getGridLength(); i++) {
+            for (int j = 0; j < Server.getGridLength(); j++) {
                 gameGrid[i][j] = new Tile();
             }
         }
@@ -260,10 +260,10 @@ class Player {
     private boolean getAvailability(int col, int row, int length, char orientation) {
         //Check if the ship "overflows" from the grid
         //If the ship is Horizontally placed and its length goes outside the grid
-        if (orientation == 'H' && (col + length - 1) >= Server.GRID_LENGTH) return false;
+        if (orientation == 'H' && (col + length - 1) >= Server.getGridLength()) return false;
 
         //If the ship is Vertically placed and its length goes outside the grid
-        if (orientation == 'V' && (row + length - 1) >= Server.GRID_LENGTH) return false;
+        if (orientation == 'V' && (row + length - 1) >= Server.getGridLength()) return false;
 
         for (int i = 0; i < length; i++) {
             if (orientation == 'H') {
@@ -291,14 +291,14 @@ class Player {
             //If the orientation is Horizontal
             if (orientation == 'H') {
                 //If the Ship isn't placed at the first or at the last column
-                if (((col + i) != 0) && ((col + i) != Server.GRID_LENGTH - 1)) {
+                if (((col + i) != 0) && ((col + i) != Server.getGridLength() - 1)) {
                     gameGrid[row][col + i - 1].setAvailable(available);
                     gameGrid[row][col + i + 1].setAvailable(available);
                 }
                 //If the Ship is placed at the first row
                 if (row == 0) gameGrid[row + 1][col + i].setAvailable(available);
                     //If the Ship is placed at the last column
-                else if (row == Server.GRID_LENGTH - 1) gameGrid[row - 1][col + i].setAvailable(available);
+                else if (row == Server.getGridLength() - 1) gameGrid[row - 1][col + i].setAvailable(available);
                 else {
                     gameGrid[row + 1][col + i].setAvailable(available);
                     gameGrid[row - 1][col + i].setAvailable(available);
@@ -307,14 +307,14 @@ class Player {
             //If the orientation is Vertical
             else {
                 //If the Ship isn't placed at the first or at the last row
-                if (((row + i) != 0) && ((row + i) != Server.GRID_LENGTH - 1)) {
+                if (((row + i) != 0) && ((row + i) != Server.getGridLength() - 1)) {
                     gameGrid[row + i - 1][col].setAvailable(available);
                     gameGrid[row + i + 1][col].setAvailable(available);
                 }
                 //If the Ship is placed at the first column
                 if (col == 0) gameGrid[row + i][col + 1].setAvailable(available);
                     //If the Ship is placed at the last row
-                else if (col == Server.GRID_LENGTH - 1) gameGrid[row + i][col - 1].setAvailable(available);
+                else if (col == Server.getGridLength() - 1) gameGrid[row + i][col - 1].setAvailable(available);
                 else {
                     gameGrid[row + i][col + 1].setAvailable(available);
                     gameGrid[row + i][col - 1].setAvailable(available);

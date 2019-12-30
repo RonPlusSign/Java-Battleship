@@ -41,7 +41,7 @@ public class PlayerGridSetter implements Runnable {
                     player.send("{ " +
                             " \"cmd\" : \"GRID\"" +
                             ", \"msg\" : {" +
-                            "\"length\" : " + Server.GRID_LENGTH +
+                            "\"length\" : " + Server.getGridLength() +
                             ", \"ships\" : \"" + msg
                             + "\"} }");
 
@@ -63,7 +63,7 @@ public class PlayerGridSetter implements Runnable {
                     player.send("{ " +
                             " \"cmd\" : \"GRID\"" +
                             ", \"msg\" : {" +
-                            "\"length\" : " + Server.GRID_LENGTH +
+                            "\"length\" : " + Server.getGridLength() +
                             ", \"ships\" : \"" + msg
                             + "\"} }");
 

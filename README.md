@@ -6,13 +6,43 @@
 
 ---
 
+## How to run Server.java
+###(THIS PART HAS TO BE TESTED)
+Enter the Server folder, then run the following command to compile the java files:
+ ```shell script
+javac Server.java
+```
+
+Create your jar file using the following command:
+ ```shell script
+jar -cvfe server.jar *
+```
+
+When launching the Server using CLI, some arguments can be added.
+Possible args are:
+*  `-p [portNumber]` specifies the port where the server has to listen from
+*  `-l [gridLength]` specifies the grid length
+*  `-p [portNumber] -l [gridLength]` specifies both options
+*  `-l [gridLength] -p [portNumber]`
+
+## How to run Client.java
+
+###TO BE ADDED
+
+When launching the Client using CLI, some arguments can be added.
+Possible args are:
+*  `[server address]` (format: "127.0.0.1")
+*  `[portNumber]` (from 1 to 65535)
+*  `[server address] [portNumber]`
+---
+
 ## Basic principles
 
 The protocol is based on a simple request-response form. The message format is as follows:
 
 REQUEST
 ```
-CMD <sp> MSG
+CMD <space> MSG
 ```
 
 RESPONSE
@@ -36,7 +66,7 @@ the msg key can contain an object, for example on the HIT response:
 ```
  
 
-where `<sp>` is a simple space, `CMD` is the command, and `MSG` is the request/response body (the `msg` key is optional)
+where `<space>` is a simple space, `CMD` is the command, and `MSG` is the request/response body (the `msg` key is optional)
 
 ---
 
@@ -136,4 +166,5 @@ format: `abb` the first digit (a) is the category, while the other digits (bb) r
  * `00` Invalid message
  * `01` Selected coordinates invalid
   * `02` Connection error
+  
 

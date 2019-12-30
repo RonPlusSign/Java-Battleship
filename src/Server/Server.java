@@ -6,23 +6,23 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-
 public class Server {
     //Array containing Players connected to this server
     private static ArrayList<Player> clientsQueue = new ArrayList<>();
     //Incremental ID representing each client connected
-    private static int clientCount = 0;
-    //Grid length (the Grid is square shaped)
-    protected static final int GRID_LENGTH = 10;
-    //Number of Game instances that can be managed
+    private static int clientCount = 0, //number of clients connected since the Server has been created
+            port = 1337,    //default port that the server uses
+            gridLength = 10;      //default grid length (the Grid is square shaped)
     private static final int MAX_GAMES_NUMBER = 10;  //number of same games that can be managed
 
     /**
      * Main Server function that manages Clients queue and starts the Games
      */
     public static void main(String[] args) {
+        checkArgs(args);
+
         //Socket opening on port xxxx
-        try (ServerSocket listener = new ServerSocket(1337)) {
+        try (ServerSocket listener = new ServerSocket(port)) {
             System.out.println("Server is Running...");
             ExecutorService pool = Executors.newFixedThreadPool(MAX_GAMES_NUMBER);
             while (true) {
@@ -61,6 +61,48 @@ public class Server {
     }
 
     /**
+     * Function that manages the arguments values
+     * Possible args are:
+     *  -p <portNumber>
+     *  -l <gridLength>
+     *  -p <portNumber> -l <gridLength>
+     *  -l <gridLength> -p <portNumber>
+     * @param args main args
+     */
+    private static void checkArgs(String[] args) {
+        try {
+            if (args.length == 2 && args[0] != null && args[1] != null) {
+                if (args[0].equals("-p") //change default port
+                        && SyntaxChecker.validPort(args[1])) {
+                    port = Integer.parseInt(args[1]);
+                } else if (args[1].equals("-l")    //change grid length
+                        && (Integer.parseInt(args[1]) > 0
+                        && Integer.parseInt(args[1]) < 100)) { //max grid value is 100
+                    gridLength = Integer.parseInt(args[1]);
+                }
+            } else if (args.length == 4 && args[0] != null && args[1] != null && args[2] != null && args[3] != null) {
+                if (args[0].equals("-p")
+                        && SyntaxChecker.validPort(args[1])
+                        && args[2].equals("-l")
+                        && (Integer.parseInt(args[3]) > 0
+                        && Integer.parseInt(args[3]) < 100)) {   //max grid value is 100
+                    port = Integer.parseInt(args[1]);
+                    gridLength = Integer.parseInt(args[3]);
+                } else if (args[0].equals("-l")
+                        && (Integer.parseInt(args[1]) > 0
+                        && Integer.parseInt(args[1]) < 100)  //max grid value is 100
+                        && args[2].equals("-p")
+                        && SyntaxChecker.validPort(args[3])) {
+                    port = Integer.parseInt(args[1]);
+                    gridLength = Integer.parseInt(args[3]);
+                }
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
      * @param player is the Player whose connection has to be tested
      * @return true if client is still connected, false otherwise
      */
@@ -91,6 +133,10 @@ public class Server {
         String nextCode = "C" + clientCount;
         clientCount++;
         return nextCode;
+    }
+
+    public static int getGridLength() {
+        return gridLength;
     }
 }
 
