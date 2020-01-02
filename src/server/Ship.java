@@ -6,18 +6,18 @@ package server;
  */
 public class Ship {
 
-    private int x;
-    private int y;
+    private int row;
+    private int column;
     private int length;
     private char orientation;
     private int lifePoints;
 
     //Constructor
-    public Ship(int length, char orientation, int x, int y) {
+    public Ship(int length, char orientation, int column, int row) {
         this.length = length;
         this.orientation = orientation;
-        this.x = x;
-        this.y = y;
+        this.column = column;
+        this.row = row;
 
         lifePoints = length;
     }
@@ -26,7 +26,7 @@ public class Ship {
         Checks if the Ship is positioned into the grid
     */
     public boolean isPositioned() {
-        return (x > 0 && y > 0);
+        return (row > 0 && column > 0);
     }
 
     /**
@@ -61,16 +61,16 @@ public class Ship {
     }
 
     /**
-     * @return the x
+     * @return the column
      */
-    public int getX() {
-        return x;
+    public int getColumn() {
+        return column;
     }
 
     /**
-     * @return the y
+     * @return the row
      */
-    public int getY() {
-        return y;
+    public int getRow() {
+        return row;
     }
 }

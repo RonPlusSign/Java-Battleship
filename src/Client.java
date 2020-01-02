@@ -1,4 +1,4 @@
-import Server.SyntaxChecker;
+import server.SyntaxChecker;
 
 import java.io.IOException;
 import java.io.InputStreamReader;

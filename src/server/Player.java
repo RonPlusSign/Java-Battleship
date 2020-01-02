@@ -136,8 +136,8 @@ class Player {
 
                 message = "{\"cmd\" : \"SUNK\"," +
                         "\"msg\" : {" +
-                        "\"row\" : " + gameGrid[row][col].getShip().getX() +
-                        ", \"col\" : " + gameGrid[row][col].getShip().getY() +
+                        "\"row\" : " + gameGrid[row][col].getShip().getRow() +
+                        ", \"col\" : " + gameGrid[row][col].getShip().getColumn() +
                         ", \"length\" : " + gameGrid[row][col].getShip().getLength() +
                         ", \"orientation\" :  '" + gameGrid[row][col].getShip().getOrientation() + "'" +
                         " } }";
@@ -225,22 +225,22 @@ class Player {
         );
         else {
             //Retrieving specific properties of the Ship
-            int xInit = gameGrid[row][col].getShip().getX();
-            int yInit = gameGrid[row][col].getShip().getY();
+            int colInit = gameGrid[row][col].getShip().getColumn();
+            int rowInit = gameGrid[row][col].getShip().getRow();
             int length = gameGrid[row][col].getShip().getLength();
             char orientation = gameGrid[row][col].getShip().getOrientation();
 
             //Deleting Ship from each Tile involved
             for (int i = 0; i < length; i++) {
                 if (orientation == 'H') {
-                    gameGrid[xInit + i][yInit].deleteShip();
+                    gameGrid[row][colInit + i ].deleteShip();
                 } else {
-                    gameGrid[xInit][yInit + i].deleteShip();
+                    gameGrid[rowInit + i ][colInit].deleteShip();
                 }
             }
 
             //Reset of the availability of the Tiles
-            setAvailability(xInit, yInit, length, orientation, true);
+            setAvailability(colInit, rowInit, length, orientation, true);
 
             //Increase of the number of "boat size" available
             shipList[length - 1]++;
