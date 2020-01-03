@@ -73,7 +73,7 @@ public class Server {
         try {
             if (args.length == 2 && args[0] != null && args[1] != null) {
                 if (args[0].equals("-p") //change default port
-                        && SyntaxChecker.validPort(args[1])) {
+                        && ConnectionSyntaxChecker.validPort(args[1])) {
                     port = Integer.parseInt(args[1]);
                 } else if (args[1].equals("-l")    //change grid length
                         && (Integer.parseInt(args[1]) > 0
@@ -82,7 +82,7 @@ public class Server {
                 }
             } else if (args.length == 4 && args[0] != null && args[1] != null && args[2] != null && args[3] != null) {
                 if (args[0].equals("-p")
-                        && SyntaxChecker.validPort(args[1])
+                        && ConnectionSyntaxChecker.validPort(args[1])
                         && args[2].equals("-l")
                         && (Integer.parseInt(args[3]) > 0
                         && Integer.parseInt(args[3]) < 100)) {   //max grid value is 100
@@ -92,7 +92,7 @@ public class Server {
                         && (Integer.parseInt(args[1]) > 0
                         && Integer.parseInt(args[1]) < 100)  //max grid value is 100
                         && args[2].equals("-p")
-                        && SyntaxChecker.validPort(args[3])) {
+                        && ConnectionSyntaxChecker.validPort(args[3])) {
                     port = Integer.parseInt(args[1]);
                     gridLength = Integer.parseInt(args[3]);
                 }

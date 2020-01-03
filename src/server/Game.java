@@ -11,7 +11,6 @@ import java.util.concurrent.TimeUnit;
  */
 class Game implements Runnable {
     private Player currentPlayer, opponent; //players
-    private SyntaxChecker syntaxChecker;
     private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
     private final int PING_DELAY = 10000;
 
@@ -27,8 +26,6 @@ class Game implements Runnable {
 
         this.currentPlayer.setOpponent(opponent);
         this.opponent.setOpponent(currentPlayer);
-
-        this.syntaxChecker = new SyntaxChecker();
 
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
         pingExecutor.scheduleAtFixedRate(this::clientsConnected, 5000, PING_DELAY, TimeUnit.MILLISECONDS);
@@ -78,14 +75,15 @@ class Game implements Runnable {
                         //during this part of the game, Client can only request for FIRE
                         if (command.startsWith("FIRE")) {
                             //If the message has the correct Format
-                            syntaxChecker.checkCorrectMessageFormat("FIRE", command);
+                            GameSyntaxChecker.checkCorrectMessageFormat("FIRE", command);
 
                             int row = Integer.parseInt(String.valueOf(command.charAt(5)).concat(String.valueOf(command.charAt(6))));
                             int col = Integer.parseInt(String.valueOf(command.charAt(7)).concat(String.valueOf(command.charAt(8))));
 
-                            syntaxChecker.checkCorrectMessage(col, row);
+                            GameSyntaxChecker.checkCorrectMessage(col, row);
 
-                            if (!opponent.fire(col, row)) {  //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise we swap the turn
+                            //fire returns true if a ship is hit. If it's hit, the Client must fire again. Otherwise the turn is swapped
+                            if (!opponent.fire(col, row)) {
                                 //if miss, exit the loop and swap the players. Otherwise the player has to fire again
                                 break;
                             }

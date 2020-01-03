@@ -1,4 +1,4 @@
-import server.SyntaxChecker;
+import server.ConnectionSyntaxChecker;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -54,14 +54,14 @@ public class Client {
         if (args.length == 2
                 && args[0] != null
                 && args[1] != null
-                && SyntaxChecker.validIP(args[0])
-                && SyntaxChecker.validPort(args[1])) {
+                && ConnectionSyntaxChecker.validIP(args[0])
+                && ConnectionSyntaxChecker.validPort(args[1])) {
             serverAddress = args[0];
             port = Integer.parseInt(args[1]);
         } else if (args.length == 1){
-            if(SyntaxChecker.validIP(args[0]))
+            if(ConnectionSyntaxChecker.validIP(args[0]))
                 serverAddress = args[0];
-            else if (SyntaxChecker.validPort(args[0]))
+            else if (ConnectionSyntaxChecker.validPort(args[0]))
                 port = Integer.parseInt(args[0]);
         }
 

@@ -101,15 +101,15 @@ public class PlayerGridSetter implements Runnable {
      * @param event SET event that has to be managed
      */
     private void set(String event) {
-        SyntaxChecker syntaxChecker = new SyntaxChecker();
-        syntaxChecker.checkCorrectMessageFormat("SET", event);
+
+        GameSyntaxChecker.checkCorrectMessageFormat("SET", event);
 
         int row = Integer.parseInt(String.valueOf(event.charAt(4)).concat(String.valueOf(event.charAt(5))));
         int col = Integer.parseInt(String.valueOf(event.charAt(6)).concat(String.valueOf(event.charAt(7))));
         int length = Integer.parseInt(String.valueOf(event.charAt(8)));
         char orientation = event.charAt(9);
 
-        syntaxChecker.checkCorrectMessage(col, row, length, orientation);
+        GameSyntaxChecker.checkCorrectMessage(col, row, length, orientation);
 
         try {
             //if an exception is thrown by player.set(), it means that its parameters are invalid
@@ -130,13 +130,13 @@ public class PlayerGridSetter implements Runnable {
      * @param event DELETE event that has to be managed
      */
     private void delete(String event) {
-        SyntaxChecker syntaxChecker = new SyntaxChecker();
-        syntaxChecker.checkCorrectMessageFormat("DELETE", event);
+
+        GameSyntaxChecker.checkCorrectMessageFormat("DELETE", event);
 
         int row = Integer.parseInt(String.valueOf(event.charAt(7)).concat(String.valueOf(event.charAt(8))));
         int col = Integer.parseInt(String.valueOf(event.charAt(9)).concat(String.valueOf(event.charAt(10))));
 
-        syntaxChecker.checkCorrectMessage(col, row);
+        GameSyntaxChecker.checkCorrectMessage(col, row);
 
         try {
             //if an exception is thrown by player.delete(), it means that its parameters are invalid
