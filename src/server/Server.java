@@ -116,7 +116,6 @@ public class Server {
         try {
             //player.send("{ \"cmd\" : \"PING\"" + ", \"msg\" : \"Testing the connection of player " + player.getName() + "\"}");
             player.send("PING");
-            player.getOutput().flush();
 
             isAlive = true;
         } catch (Exception exception) {

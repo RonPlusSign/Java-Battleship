@@ -37,7 +37,9 @@ public class Client {
 
         new Thread(() -> {  //read from Server input on another thread
             while (true) {
-                System.out.println(in.nextLine());  //print server's messages to console
+                String message = in.nextLine();
+                if (!message.equals("PING"))
+                    System.out.println(message);  //print server's messages to console
             }
         }).start();
 

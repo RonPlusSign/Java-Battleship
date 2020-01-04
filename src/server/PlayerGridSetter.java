@@ -48,6 +48,8 @@ public class PlayerGridSetter implements Runnable {
                 } else if (command.startsWith("SET")) {
                     set(command);
 
+                    player.printGrid();
+
                 } else if (command.startsWith("DELETE")) {
                     delete(command);
 
@@ -86,13 +88,16 @@ public class PlayerGridSetter implements Runnable {
                             break;
                     }
                 }
-            } catch (Exception e) {
-                System.out.println("Exception thrown: " + e.getMessage());
-                player.send(e.getMessage());
+            } catch (Exception e) { //the only Exception that can be catched is thrown by player.receive() (it uses input.nextline(); that throws an exception if the socket is closed)
+                System.out.println("Client " + player.getName() + " disconnected.");
                 break;
             }
         }
-        System.out.println("Grid positioning of " + player.getName() + " finished");
+        if (player.isReadyToPlay()) { //print the message only if the player sent READY, not if it has disconnected
+            System.out.println("Grid positioning of " + player.getName() + " finished.");
+
+            player.printGrid();
+        }
     }
 
     /**

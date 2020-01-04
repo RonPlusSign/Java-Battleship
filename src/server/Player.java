@@ -68,10 +68,10 @@ class Player {
      * @param message message to be sent
      */
     public synchronized void send(String message) {
-        System.out.println("SENDING: " + message);
-
         //check if message is null
         if (message != null) {
+            if (!message.equals("PING")) System.out.println("SENDING (" + name + "): " + message);
+
             //write the message
             output.printf(message + "\n");
 
@@ -233,9 +233,9 @@ class Player {
             //Deleting Ship from each Tile involved
             for (int i = 0; i < length; i++) {
                 if (orientation == 'H') {
-                    gameGrid[row][colInit + i ].deleteShip();
+                    gameGrid[row][colInit + i].deleteShip();
                 } else {
-                    gameGrid[rowInit + i ][colInit].deleteShip();
+                    gameGrid[rowInit + i][colInit].deleteShip();
                 }
             }
 
@@ -337,15 +337,6 @@ class Player {
     }
 
     /* ------ Getters and Setters ------- */
-
-    public PrintWriter getOutput() {
-        return output;
-    }
-
-    public Scanner getInput() {
-        return input;
-    }
-
     public String getName() {
         return name;
     }
@@ -382,5 +373,13 @@ class Player {
         this.readyToPlay = readyToPlay;
     }
 
-
+    public void printGrid() {
+        for (Tile[] tiles : gameGrid) {
+            for (Tile tile : tiles) {
+                if (tile.getShip() == null) System.out.print("0 ");
+                else System.out.print("1 ");
+            }
+            System.out.println();
+        }
+    }
 }
