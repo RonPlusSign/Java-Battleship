@@ -187,8 +187,20 @@ class Player {
         if (shipList[length - 1] > 0) {
             // Check if involved Tiles are available
             if (getAvailability(col, row, length, orientation)) {
-                gameGrid[row][col].insertShip(new Ship(length, orientation, col, row));
+                //Insert of the Ship in the tiles
+                Ship s = new Ship(length, orientation, col, row);
+
+                for (int i = 0; i < length; i++) {
+                    if(orientation == 'H'){
+                        gameGrid[row][col+i].insertShip(s);
+                    } else {
+                        gameGrid[row+i][col].insertShip(s);
+                    }
+                }
+
+                //Decrease total number of ships of that 'length'
                 shipList[length - 1]--;
+                //Set availabilty at 'false' of the interested tiles
                 setAvailability(col, row, length, orientation, false);
             }
             //At least one Tile's not available
