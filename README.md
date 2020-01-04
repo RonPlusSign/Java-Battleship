@@ -7,21 +7,15 @@
 ---
 
 ## How to run Server.java
-Inside the 'server' folder, run the following command:
- ```shell script
-> javac *java
-```
-Then:
- ```shell script
-> cd ..
-> java server.Server
-```
 
-
-(to test)
-Create your jar file using the following command:
+Inside the `server` folder, run the following command to compile the `.java` files:
  ```shell script
-jar -cvfe server.jar *
+javac *.java
+```
+Then, to launch the server:
+ ```shell script
+cd ..
+java server.Server
 ```
 
 When launching the Server using CLI, some arguments can be added.
@@ -32,14 +26,20 @@ Possible args are:
 *  `-l [gridLength] -p [portNumber]`
 
 ## How to run Client.java
-
-###TO BE ADDED
+Inside the `src` folder, run the following command to compile the client:
+ ```shell script
+javac *.java
+```
+Then, to launch the Client:
+ ```shell script
+java Client
+```
 
 When launching the Client using CLI, some arguments can be added.
 Possible args are:
 *  `[server address]` (format: "127.0.0.1")
 *  `[portNumber]` (from 1 to 65535)
-*  `[server address] [portNumber]`
+*  `[server address] [portNumber]` (or vice versa)
 ---
 <br>
 

@@ -2,6 +2,7 @@ import server.ConnectionSyntaxChecker;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.io.PrintWriter;
 import java.net.Socket;
@@ -60,15 +61,19 @@ public class Client {
                 && ConnectionSyntaxChecker.validPort(args[1])) {
             serverAddress = args[0];
             port = Integer.parseInt(args[1]);
-        } else if (args.length == 1){
-            if(ConnectionSyntaxChecker.validIP(args[0]))
+        } else if (args.length == 1) {
+            if (ConnectionSyntaxChecker.validIP(args[0]))
                 serverAddress = args[0];
             else if (ConnectionSyntaxChecker.validPort(args[0]))
                 port = Integer.parseInt(args[0]);
         }
 
-        client = new Client(serverAddress, port);
-        client.play();
+        try {
+            client = new Client(serverAddress, port);
+            client.play();
+        } catch (UnknownHostException e) {
+            System.out.println("Error during connection.\nInvalid IP address or port (" + serverAddress + ":" + port + ")");
+        }
     }
 
 }
