@@ -139,7 +139,7 @@ class Player {
                         "\"row\" : " + gameGrid[row][col].getShip().getRow() +
                         ", \"col\" : " + gameGrid[row][col].getShip().getColumn() +
                         ", \"length\" : " + gameGrid[row][col].getShip().getLength() +
-                        ", \"orientation\" :  '" + gameGrid[row][col].getShip().getOrientation() + "'" +
+                        ", \"orientation\" :  \"" + gameGrid[row][col].getShip().getOrientation() + "\"" +
                         " } }";
 
                 //sent SUNK to both players
@@ -191,10 +191,10 @@ class Player {
                 Ship s = new Ship(length, orientation, col, row);
 
                 for (int i = 0; i < length; i++) {
-                    if(orientation == 'H'){
-                        gameGrid[row][col+i].insertShip(s);
+                    if (orientation == 'H') {
+                        gameGrid[row][col + i].insertShip(s);
                     } else {
-                        gameGrid[row+i][col].insertShip(s);
+                        gameGrid[row + i][col].insertShip(s);
                     }
                 }
 

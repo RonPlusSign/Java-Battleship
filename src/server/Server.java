@@ -63,10 +63,11 @@ public class Server {
     /**
      * Function that manages the arguments values
      * Possible args are:
-     *  -p <portNumber>
-     *  -l <gridLength>
-     *  -p <portNumber> -l <gridLength>
-     *  -l <gridLength> -p <portNumber>
+     * -p <portNumber>
+     * -l <gridLength>
+     * -p <portNumber> -l <gridLength>
+     * -l <gridLength> -p <portNumber>
+     *
      * @param args main args
      */
     private static void checkArgs(String[] args) {

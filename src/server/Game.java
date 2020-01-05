@@ -70,7 +70,15 @@ class Game implements Runnable {
                             "\"msg\" : false }");
 
                     try {
-                        String command = currentPlayer.receive();
+                        String command = "";
+
+                        try{
+                            command = currentPlayer.receive();
+                        } catch (Exception e){
+                            opponent.send("{\"cmd\" : \"WON\"," +
+                                    "\"msg\": \"Your opponent left the game. \" }");
+                            break;
+                        }
 
                         //during this part of the game, Client can only request for FIRE
                         if (command.startsWith("FIRE")) {
