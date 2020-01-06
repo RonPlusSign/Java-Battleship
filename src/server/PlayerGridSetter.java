@@ -88,8 +88,8 @@ public class PlayerGridSetter implements Runnable {
                     }
                 }
             } catch (Exception e) {
-                if(e.getMessage().contains("ERROR")) player.send(e.getMessage());
-                else{
+                if (e.getMessage().contains("ERROR")) player.send(e.getMessage());
+                else {
                     System.out.println("Client " + player.getName() + " disconnected.");
                     break;
                 }
@@ -99,6 +99,14 @@ public class PlayerGridSetter implements Runnable {
             System.out.println("Grid positioning of " + player.getName() + " finished.");
 
             player.printGrid();
+        } else {
+            System.out.println("Client " + player.getName() + " left.");
+
+            if (player.getOpponent() != null) {
+                player.getOpponent().send("{\"cmd\" : \"WON\"," +
+                        "\"msg\": \"Your opponent left the game. \" }");
+                player.getOpponent().disconnect();
+            }
         }
     }
 

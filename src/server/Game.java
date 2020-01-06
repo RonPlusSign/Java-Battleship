@@ -1,6 +1,5 @@
 package server;
 
-import java.io.IOException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +64,7 @@ class Game implements Runnable {
      * See README.md for more info about the protocol
      */
     private void manageGame() {
-        while (clientsConnected() && isGameFinished==false) {
+        while (clientsConnected() && !isGameFinished) {
             try {
                 //Loops until the move is valid
                 while (true) {
@@ -84,6 +83,7 @@ class Game implements Runnable {
                         } catch (Exception e){
                             opponent.send("{\"cmd\" : \"WON\"," +
                                     "\"msg\": \"Your opponent left the game. \" }");
+                            isGameFinished = true;
                             break;
                         }
 
@@ -139,12 +139,8 @@ class Game implements Runnable {
 
             opponent.send("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
-
-            try {
-                opponent.getSocket().close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            opponent.disconnect();
+            isGameFinished = true;
 
             System.out.println(currentPlayer.getName() + " disconnected");
             return false;
@@ -154,12 +150,8 @@ class Game implements Runnable {
 
             currentPlayer.send("{\"cmd\" : \"WON\"," +
                     "\"msg\": \"Your opponent left the game. \" }");
-
-            try {
-                currentPlayer.getSocket().close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            currentPlayer.disconnect();
+            isGameFinished = true;
 
             System.out.println(opponent.getName() + " disconnected");
             return false;

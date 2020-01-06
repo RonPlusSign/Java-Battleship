@@ -62,6 +62,16 @@ class Player {
         new Thread(new PlayerGridSetter(this)).start();
     }
 
+    public void disconnect(){
+        try {
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        input.close();
+        output.close();
+    }
+
     /**
      * Function used to write on the player's output stream
      * It must be synchronized because multiple threads have to write on the socket one at the time
@@ -156,16 +166,8 @@ class Player {
                     game.setIsGameFinished(true);
 
                     //Disconnect both Clients when match is finished
-                    try {
-                        socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        opponent.socket.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    this.disconnect();
+                    opponent.disconnect();
                 }
             }
             return true;
