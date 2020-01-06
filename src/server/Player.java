@@ -18,6 +18,7 @@ class Player {
     private PrintWriter output;
     private Tile[][] gameGrid;
     private boolean readyToPlay;
+    private Game game;
 
     /**
      * Contains the number of ships available for each length
@@ -150,6 +151,9 @@ class Player {
                 if (shipsAlive == 0) {    //if the ships left are 0, the opponent WIN (the function fire() works on the player who's been hit, so Opponent is the player who sent FIRE
                     opponent.send("{\"cmd\" : \"WON\"}");
                     send("{\"cmd\" : \"LOST\"}");
+
+                    //TEMP VAR.
+                    game.setIsGameFinished(true);
 
                     //Disconnect both Clients when match is finished
                     try {
@@ -375,6 +379,10 @@ class Player {
 
     public int getShipsAlive() {
         return shipsAlive;
+    }
+
+    protected void setGame (Game game){
+        this.game=game;
     }
 
     public boolean isReadyToPlay() {

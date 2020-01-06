@@ -13,6 +13,8 @@ class Game implements Runnable {
     private Player currentPlayer, opponent; //players
     private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
     private final int PING_DELAY = 10000;
+    private boolean isGameFinished;
+
 
     /**
      * Constructor
@@ -27,8 +29,13 @@ class Game implements Runnable {
         this.currentPlayer.setOpponent(opponent);
         this.opponent.setOpponent(currentPlayer);
 
+        this.currentPlayer.setGame(this);
+        this.opponent.setGame(this);
+
         pingExecutor = Executors.newSingleThreadScheduledExecutor();
         pingExecutor.scheduleAtFixedRate(this::clientsConnected, 5000, PING_DELAY, TimeUnit.MILLISECONDS);
+
+        isGameFinished = false;
     }
 
     /**
@@ -58,7 +65,7 @@ class Game implements Runnable {
      * See README.md for more info about the protocol
      */
     private void manageGame() {
-        while (clientsConnected()) {
+        while (clientsConnected() && isGameFinished==false) {
             try {
                 //Loops until the move is valid
                 while (true) {
@@ -161,4 +168,9 @@ class Game implements Runnable {
         //System.out.println("[Connection OK] Both players are still in the game");
         return true;
     }
+
+    protected void setIsGameFinished(boolean b){
+        this.isGameFinished = b;
+    }
+
 }
