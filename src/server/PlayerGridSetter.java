@@ -27,8 +27,7 @@ public class PlayerGridSetter implements Runnable {
             try {
                 command = player.receive();
             } catch (Exception e) {
-                System.out.println("Exception thrown: " + e.getMessage());
-                break;
+                break;  //if there's a connection error, finish the positioning
             }
 
             try {
@@ -47,11 +46,11 @@ public class PlayerGridSetter implements Runnable {
 
                 } else if (command.startsWith("SET")) {
                     set(command);
-
-                    player.printGrid();
+                    //player.printGrid();
 
                 } else if (command.startsWith("DELETE")) {
                     delete(command);
+                    //player.printGrid();
 
                 } else if (command.startsWith("RESET")) {
                     player.resetGrid();
@@ -88,9 +87,12 @@ public class PlayerGridSetter implements Runnable {
                             break;
                     }
                 }
-            } catch (Exception e) { //the only Exception that can be catched is thrown by player.receive() (it uses input.nextline(); that throws an exception if the socket is closed)
-                System.out.println("Client " + player.getName() + " disconnected.");
-                break;
+            } catch (Exception e) {
+                if(e.getMessage().contains("ERROR")) player.send(e.getMessage());
+                else{
+                    System.out.println("Client " + player.getName() + " disconnected.");
+                    break;
+                }
             }
         }
         if (player.isReadyToPlay()) { //print the message only if the player sent READY, not if it has disconnected

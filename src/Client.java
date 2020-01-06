@@ -38,14 +38,24 @@ public class Client {
 
         new Thread(() -> {  //read from Server input on another thread
             while (true) {
-                String message = in.nextLine();
+                String message = null;
+                try {
+                    message = in.nextLine();
+                } catch (Exception e) { //nextline() throws an Exception if there's a connection problem
+                    break;
+                }
                 if (!message.equals("PING"))
                     System.out.println(message);  //print server's messages to console
+                if(message.contains("WIN") || message.contains("LOST")) break;
             }
         }).start();
 
         while (true) {  //send keyboard input to the server
-            out.println(keyboard.nextLine());
+            try {
+                out.println(keyboard.nextLine());
+            } catch (Exception e) { //println() throws an Exception if there's a connection problem
+                break;
+            }
         }
     }
 

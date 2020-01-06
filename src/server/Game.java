@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 class Game implements Runnable {
     private Player currentPlayer, opponent; //players
     private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
-    private final int PING_DELAY = 10000;
+    private final int PING_DELAY = 5000;
     private boolean isGameFinished;
 
 
