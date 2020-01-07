@@ -86,7 +86,13 @@ public class PlayerGridSetter implements Runnable {
                         } else  //if both players are ready, exit from the grid setting (Game is going to warn Clients to start the game (PLAY command))
                             break;
                     }
+                } else {
+                    player.send("{ \"cmd\" : \"ERROR\"" +
+                                ", \"msg\" : { " +
+                                "\"cod\" : \"900\"" +
+                                ",\"msg\" : \"Invalid Message\" } }");
                 }
+
             } catch (Exception e) {
                 if (e.getMessage().contains("ERROR")) player.send(e.getMessage());
                 else {

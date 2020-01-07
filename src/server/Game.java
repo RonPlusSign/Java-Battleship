@@ -9,9 +9,7 @@ import java.util.concurrent.TimeUnit;
  * Class that manages a game between 2 Players
  */
 class Game implements Runnable {
-    private Player currentPlayer, opponent; //players
-    private final ScheduledExecutorService pingExecutor;    //ExecutorService used to send PING to clients after a few seconds
-    private final int PING_DELAY = 5000;
+    private Player currentPlayer, opponent; //Players
     private boolean isGameFinished;
 
 
@@ -30,9 +28,6 @@ class Game implements Runnable {
 
         this.currentPlayer.setGame(this);
         this.opponent.setGame(this);
-
-        pingExecutor = Executors.newSingleThreadScheduledExecutor();
-        pingExecutor.scheduleAtFixedRate(this::clientsConnected, 5000, PING_DELAY, TimeUnit.MILLISECONDS);
 
         isGameFinished = false;
     }
@@ -131,5 +126,5 @@ class Game implements Runnable {
     protected void setIsGameFinished(boolean b){
         this.isGameFinished = b;
     }
-    
+
 }
