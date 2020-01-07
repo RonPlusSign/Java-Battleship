@@ -95,13 +95,17 @@ public class PlayerGridSetter implements Runnable {
                 }
             }
         }
-        if (player.isReadyToPlay()) { //print the message only if the player sent READY, not if it has disconnected
+        //print the message only if the player sent READY, not if it has disconnected
+        if (player.isReadyToPlay()) { 
             System.out.println("Grid positioning of " + player.getName() + " finished.");
 
             player.printGrid();
         } else {
             System.out.println("Client " + player.getName() + " left.");
 
+            //TODO: replace "player.getOpponent() != null"
+            //TODO: with "!Server.testConnection(player.getOpponent())"
+            //TODO: once the function works
             if (player.getOpponent() != null) {
                 player.getOpponent().send("{\"cmd\" : \"WON\"," +
                         "\"msg\": \"Your opponent left the game. \" }");

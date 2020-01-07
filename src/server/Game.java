@@ -64,7 +64,7 @@ class Game implements Runnable {
      * See README.md for more info about the protocol
      */
     private void manageGame() {
-        while (clientsConnected() && !isGameFinished) {
+        while (!isGameFinished) {
             try {
                 //Loops until the move is valid
                 while (true) {
@@ -128,41 +128,8 @@ class Game implements Runnable {
         }
     }
 
-    /**
-     * Checks if the players are still in the game
-     *
-     * @return The status of the connection (TRUE = Ok)
-     */
-    private boolean clientsConnected() {
-        if (!Server.testConnection(currentPlayer)) {
-            System.out.println("[Connection ERROR] Player " + currentPlayer.getName() + " disconnected.");
-
-            opponent.send("{\"cmd\" : \"WON\"," +
-                    "\"msg\": \"Your opponent left the game. \" }");
-            opponent.disconnect();
-            isGameFinished = true;
-
-            System.out.println(currentPlayer.getName() + " disconnected");
-            return false;
-
-        } else if (!Server.testConnection(opponent)) {
-            System.out.println("[Connection ERROR] Player " + opponent.getName() + " disconnected.");
-
-            currentPlayer.send("{\"cmd\" : \"WON\"," +
-                    "\"msg\": \"Your opponent left the game. \" }");
-            currentPlayer.disconnect();
-            isGameFinished = true;
-
-            System.out.println(opponent.getName() + " disconnected");
-            return false;
-        }
-
-        //System.out.println("[Connection OK] Both players are still in the game");
-        return true;
-    }
-
     protected void setIsGameFinished(boolean b){
         this.isGameFinished = b;
     }
-
+    
 }
