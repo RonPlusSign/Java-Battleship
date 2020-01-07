@@ -2,7 +2,7 @@
 
 ### This mainly is the server of the application, for the client's GUI go to:
 #### https://github.com/regi18/vue-battleship-gui
-###### This project contains a very basic CLI client (Client.java)
+###### This project contains also a very basic CLI client (Client.java)
 
 ---
 
