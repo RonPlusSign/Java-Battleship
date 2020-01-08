@@ -2,12 +2,11 @@
 
 ### This mainly is the server of the application, for the client's GUI go to:
 #### https://github.com/regi18/vue-battleship-gui
-###### This project contains also a very basic CLI client (Client.java)
+##### This repository contains a basic CLI client (Client.java)
 
 ---
 
 ## How to run Server.java
-
 Inside the `server` folder, run the following command to compile the `.java` files:
  ```shell script
 javac *.java
@@ -25,6 +24,19 @@ Possible args are:
 *  `-p [portNumber] -l [gridLength]` specifies both options
 *  `-l [gridLength] -p [portNumber]`
 
+### How to run the Server as a jar file:
+After the server files have been compiled, to generate the `sever.jar` file using the following command inside the `src` folder:
+```shell script
+jar cvmf META-INF/server-manifest.mf server.jar server/*.class
+```
+
+Then, to run the `server.jar` file use the following command:
+```shell script
+java -jar server.jar
+```
+
+---
+
 ## How to run Client.java
 Inside the `src` folder, run the following command to compile the client:
  ```shell script
@@ -40,8 +52,18 @@ Possible args are:
 *  `[server address]` (format: "127.0.0.1")
 *  `[portNumber]` (from 1 to 65535)
 *  `[server address] [portNumber]` (or vice versa)
----
-<br>
+
+### How to run the Client as a jar file:
+After the `Client.java` has been compiled, generate the `client.jar` file using the following command:
+```shell script
+jar cvmf META-INF/client-manifest.mf client.jar Client.class
+```
+
+Then, to run the `client.jar` file use the following command:
+```shell script
+java -jar client.jar
+```
+
 
 # Communication specifications
 

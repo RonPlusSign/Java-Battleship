@@ -2,6 +2,7 @@ import server.ConnectionSyntaxChecker;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.ConnectException;
 import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.io.PrintWriter;
@@ -83,6 +84,9 @@ public class Client {
             client.play();
         } catch (UnknownHostException e) {
             System.out.println("Error during connection.\nInvalid IP address or port (" + serverAddress + ":" + port + ")");
+        } catch(ConnectException e){
+            System.out.println("Error during connection.\n Server is unreachable (" + serverAddress + ":" + port + ")");
+
         }
     }
 
